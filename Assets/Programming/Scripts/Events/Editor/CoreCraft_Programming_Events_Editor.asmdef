@@ -1,0 +1,16 @@
+{
+    "name": "CoreCraft_Programming_Events_Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a205d2cf1470886419c1a4741780001d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
