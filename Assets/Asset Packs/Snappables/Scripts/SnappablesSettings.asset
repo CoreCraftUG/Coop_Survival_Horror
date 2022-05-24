@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b92e17cc177e1a468377602b335904d, type: 3}
+  m_Name: SnappablesSettings
+  m_EditorClassIdentifier: 
+  lastUsedGroup: {fileID: 11400000, guid: ee20b2caec9d3e345bbcdc7438612a7e, type: 2}
+  buttonsSize: 80
+  buttonSelectedColor: {r: 0, g: 1, b: 1, a: 1}
+  handlesSize: 0.1
+  handlesPointColor: {r: 0, g: 0, b: 1, a: 1}
+  handlesSelectedColor: {r: 0, g: 1, b: 1, a: 1}
+  previewMaterial: {fileID: 2100000, guid: 1d9e7f81b1142194fbf945dfc2904c94, type: 2}
+  searchMenu: 103
+  cyclePoint: 99
+  cycleTarget: 118
+  rotatePrefab: 98
+  spawnPrefab: 49
