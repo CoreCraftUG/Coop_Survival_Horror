@@ -400,7 +400,95 @@ MonoBehaviour:
   assetList:
   - Assets/Bakery/examples/content/sponza/bush.FBX
   - Assets/Bakery/examples/content/floor_lamp.FBX
-  uvOverlapAssetList: 00000000ffffffff
+  - Assets/Asset Packs/Feel/FeelDemos/Tactical/Animations/FeelTactical@Gunplay.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Brass/Animations/FeelTactical@Dancing.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Dude/MMFeedbackDemoDude@Idle.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Dude/MMFeedbackDemoDude@Jump.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Brass/Animations/FeelTactical@Turn.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Dude/MMFeedbackDemoDude@TPose.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Tactical/Animations/FeelTactical@Reloading.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Tactical/Models/FeelTactical@TPose.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Tactical/Animations/FeelTactical@Idle.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/MMBurger.fbx
+  - Assets/Asset Packs/SplineMesh/DemoAssets/Mesh/cylinder.dae
+  - Assets/Asset Packs/Feel/FeelDemosURP/Strike/Models/FeelStrikeBall.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Desk 2.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/TREE_1 3.fbx
+  - Assets/Asset Packs/Bakery/examples/content/logolight.FBX
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Rock1.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Collider.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Potion Containers 3.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Cube.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/SequencingDemo/Prefabs/Crate.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Wheel/Models/FeelWheelGround.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Soft Cube.fbx
+  - Assets/Asset Packs/Bakery/examples/content/floor_lamp.FBX
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Shelf 2.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Pencil.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Wheel/Models/FeelWheel.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/book.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Pebble 1.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Pebble 2.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Background/Background.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Bounce/Models/FeelBounceBox.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Damaged Bowl.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Torus Big.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Bricks Group Of 2.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/rigidbody.fbx
+  - Assets/Asset Packs/SplineMesh/DemoAssets/Mesh/Railling.fbx
+  - Assets/Asset Packs/Magic Light Probes/Examples/Models/HandfulOfCrystals.obj
+  - Assets/Asset Packs/Bakery/examples/content/sponza/bush.FBX
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Paper.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Range Circle.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Torus.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Soft Ramp Up And Down.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Stool.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Table.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Rock3.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Leaf 2.fbx
+  - Assets/Asset Packs/Mirror/Examples/Tanks/Models/(Public Domain) Recon_Tank/reconTank.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Banana.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/MMApple.fbx
+  - Assets/Asset Packs/Feel/FeelDemosURP/Strike/Models/FeelStrikePinPhysicsMesh.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/TREE_1 2.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Rock2.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Tactical/Models/FeelTacticalAssaultRifle.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Barbarians/Models/FeelBarbarianBackgroundTopDown.fbx
+  - Assets/Asset Packs/Plugins/Easy performant outline/Demo/Models for Demo scene/BitGem/Police_Officer_SC/Models/cop.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Torus Small.fbx
+  - Assets/Asset Packs/Feel/FeelDemosURP/Strike/Models/FeelStrikePin.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/SquashAndStretch/Prefabs/FeelSquashAndStretchChalet.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Play Mode.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/Sphere.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/tick.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Mashing Stick.fbx
+  - Assets/Asset Packs/Feel/FeelDemosHDRP/Falcon/Models/FeelFalcon.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Beach.fbx
+  - Assets/Asset Packs/Magic Light Probes/Examples/Models/RocksAndTree.FBX
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Banana Bunch.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Blob/Models/FeelBlobModel.obj
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Plank 2.fbx
+  - Assets/Asset Packs/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Models/MMCupcake.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Bricks Group Of 3.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Barbarians/Models/FeelBarbarian.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Screw.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Open Crate.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Room HALF.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/Barbarians/Models/FeelBarbarianBackground.fbx
+  - Assets/Asset Packs/Feel/FeelDemosHDRP/Falcon/Models/FeelRock.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Plank.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Palm Tree.fbx
+  - Packages/com.unity.render-pipelines.core/Editor/Resources/DebugProbe.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Turning Arrow.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Torus Holder.fbx
+  - Assets/Asset Packs/Mirror/Examples/MultipleAdditiveScenes/Models/Icosphere/Icosphere.obj
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Pebble.fbx
+  - Assets/Asset Packs/Feel/FeelDemos/SquashAndStretch/Prefabs/FeelSquashAndStretchCar.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Potion Containers 4.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Coconut.fbx
+  - Assets/Asset Packs/Snappables/Examples/ExampleAssets.fbx
+  - Assets/Asset Packs/Plugins/Grabbit/Demo/Models/Plank 1.fbx
+  uvOverlapAssetList: 00000000ffffffff000000000000000000000000000000000000000000000000000000000101000000000000010100000101000001010000ffffffff010100000000000000000000ffffffff01010000000000000101000000000000ffffffff00000000ffffffffffffffff0000000001010000ffffffffffffffff0000000001010000ffffffffffffffffffffffffffffffffffffffff0101000000000000ffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffff00000000ffffffff01010000000000000101000000000000010100000101000001010000ffffffff0000000000000000ffffffff00000000ffffffffffffffff01010000ffffffff01010000ffffffff00000000ffffffff01010000ffffffff01010000ffffffffffffffffffffffff0101000000000000ffffffffffffffff00000000ffffffffffffffff01010000ffffffff0000000001010000ffffffff01010000ffffffff
   xatlasWarningShown: 0
   foundCompatibleSetup: 0
   gpuName: 
