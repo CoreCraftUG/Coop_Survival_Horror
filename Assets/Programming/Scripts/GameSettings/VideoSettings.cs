@@ -264,17 +264,23 @@ namespace CoreCraft.Programming.GameSettings
             // Project Setting / URP Control
             switch (index)
             {
+                case 0: // NO AA / MSAA: Disabled
+                    _urp.msaaSampleCount = 1;
+                    break;
                 case 1: // FXAA / MSAA: Disabled
                     _urp.msaaSampleCount = 1;
                     break;
-                case 2: // MSAA 2X
+                case 2: // MSAA 2X / NO AA
                     _urp.msaaSampleCount = 2;
+                    _soCamera.GameObject.GetComponent<Camera>().GetComponent<UniversalAdditionalCameraData>().antialiasing = AntialiasingMode.None;
                     break;
-                case 3: // MSAA 4X
+                case 3: // MSAA 4X / NO AA
                     _urp.msaaSampleCount = 4;
+                    _soCamera.GameObject.GetComponent<Camera>().GetComponent<UniversalAdditionalCameraData>().antialiasing = AntialiasingMode.None;
                     break;
-                case 4: // MSAA 8X
+                case 4: // MSAA 8X / NO AA
                     _urp.msaaSampleCount = 8;
+                    _soCamera.GameObject.GetComponent<Camera>().GetComponent<UniversalAdditionalCameraData>().antialiasing = AntialiasingMode.None;
                     break;
                 case 5: // SMAA LOW / MSAA: Disabled
                     _urp.msaaSampleCount = 1;
@@ -293,6 +299,9 @@ namespace CoreCraft.Programming.GameSettings
             // Camera Control
             switch (index)
             {
+                case 0:
+                    _soCamera.GameObject.GetComponent<Camera>().GetComponent<UniversalAdditionalCameraData>().antialiasing = AntialiasingMode.None;
+                    break;
                 case 1: 
                     _soCamera.GameObject.GetComponent<Camera>().GetComponent<UniversalAdditionalCameraData>().antialiasing = AntialiasingMode.FastApproximateAntialiasing;
                     break;

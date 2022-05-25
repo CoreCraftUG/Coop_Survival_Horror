@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8a3e3e7176874247ba768ad26c01903, type: 3}
+  m_Name: SO_DefaultSettings
+  m_EditorClassIdentifier: 
+  SaveData:
+    MouseSensivity: 0.1
+    MouseInvertX: 0
+    MouseInvertY: 0
+    Resolution: 0
+    WindowMode: 0
+    Brightness: 0
+    RenderDistance: 1500
+    VSync: 0
+    AntiAliasing: 7
+    ShadowQuality: 0
+    SoftShadows: 1
+    TextureQuality: 0
+    AnisotropicTextures: 0
+    SoftParticles: 1
+    RealtimeReflectionProbes: 1
+    BillboardsFacingCameraPositions: 1
+    SkinWeights: 3
+    LODBias: 4
+    ParticleRaycastBudget: 5
+    FieldOfView: 90
+    SSAO: 1

@@ -45,6 +45,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: C_MainMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 2448625507232155746, guid: a8ba6d2221f8bc843a83f1a9f4e304e5,
+        type: 3}
+      propertyPath: OffSetPlaneDistance
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5847835521257739957, guid: a8ba6d2221f8bc843a83f1a9f4e304e5,
         type: 3}
       propertyPath: _settingsMenu
@@ -172,8 +177,18 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 534995802097831859, guid: 212589b5c95637b459237ff4d02131f5,
         type: 3}
+      propertyPath: Title
+      value: Settings // Video
+      objectReference: {fileID: 0}
+    - target: {fileID: 534995802097831859, guid: 212589b5c95637b459237ff4d02131f5,
+        type: 3}
       propertyPath: _title
       value: Settings // Video
+      objectReference: {fileID: 0}
+    - target: {fileID: 714893842906248624, guid: 212589b5c95637b459237ff4d02131f5,
+        type: 3}
+      propertyPath: Title
+      value: Settings // Game
       objectReference: {fileID: 0}
     - target: {fileID: 714893842906248624, guid: 212589b5c95637b459237ff4d02131f5,
         type: 3}
@@ -330,6 +345,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -150
+      objectReference: {fileID: 0}
+    - target: {fileID: 2904622873329928154, guid: 212589b5c95637b459237ff4d02131f5,
+        type: 3}
+      propertyPath: Description
+      value: "<color=\"orange\">Without</color> V-Sync enabled, your graphics card
+        is free to render frames at a rate higher than your monitor can actually
+        display them. This often has the benefit of improving laggy framerates, improving
+        input latency, and improving unstable framerates so they aren\u2019t as noticeable.\n\n<color=\"orange\">With</color>
+        V-Sync enabled, it limits the number of frames output to your display at
+        either the auto-detected refresh rate of the display, or the manually set
+        refresh rate on the game settings."
       objectReference: {fileID: 0}
     - target: {fileID: 5394017042995776440, guid: 212589b5c95637b459237ff4d02131f5,
         type: 3}
@@ -598,8 +624,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470489929622806991, guid: 212589b5c95637b459237ff4d02131f5,
         type: 3}
+      propertyPath: Title
+      value: Settings // Audio
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470489929622806991, guid: 212589b5c95637b459237ff4d02131f5,
+        type: 3}
       propertyPath: _title
       value: Settings // Audio
+      objectReference: {fileID: 0}
+    - target: {fileID: 6664076085928171708, guid: 212589b5c95637b459237ff4d02131f5,
+        type: 3}
+      propertyPath: Title
+      value: Settings // Interface
       objectReference: {fileID: 0}
     - target: {fileID: 6664076085928171708, guid: 212589b5c95637b459237ff4d02131f5,
         type: 3}

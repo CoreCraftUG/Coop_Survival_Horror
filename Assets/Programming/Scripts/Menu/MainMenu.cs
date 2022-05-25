@@ -45,9 +45,9 @@ namespace CoreCraft.Programming.Menu
         // Assign Button Events
         private void AssignButtonEvents()
         {
-            _startGameButton.onClick.AddListener(delegate { StartGame(); });
-            _settingsButton.onClick.AddListener(delegate { Settings(); });
-            _quitButton.onClick.AddListener(delegate { Quit(); });
+            _startGameButton.onClick.AddListener(StartGame);
+            _settingsButton.onClick.AddListener(Settings);
+            _quitButton.onClick.AddListener(Quit);
         }
     }
 }
