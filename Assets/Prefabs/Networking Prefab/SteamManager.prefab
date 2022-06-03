@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 731146545423415807}
   - component: {fileID: 1862120279580455819}
   - component: {fileID: 5666224099594953645}
+  - component: {fileID: 7332732334079117910}
   m_Layer: 0
   m_Name: SteamManager
   m_TagString: Untagged
@@ -59,6 +60,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400b8559e1a65804db617952b6c729d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnLobbyCreate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLobbyJoin:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLobbyLeave:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLobbyInvite:
+    m_PersistentCalls:
+      m_Calls: []
+  _inLobbyFriend: {fileID: 0}
+  _inLobbyContent: {fileID: 0}
 --- !u!114 &5666224099594953645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,3 +91,19 @@ MonoBehaviour:
   _friendContent: {fileID: 0}
   _friendObject: {fileID: 7266815645782822385, guid: 5d31da36de1d179489c86a790c97d82b,
     type: 3}
+--- !u!114 &7332732334079117910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731146545423415804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

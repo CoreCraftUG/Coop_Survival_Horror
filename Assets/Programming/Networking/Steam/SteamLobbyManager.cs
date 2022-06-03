@@ -14,7 +14,7 @@ using NM = Unity.Netcode.NetworkManager;
 
 namespace CoreCraft.Networking.Steam
 {
-    public class SteamLobbyManager : MonoBehaviour
+    public class SteamLobbyManager : NetworkBehaviour
     {
         public static Lobby CurrentLobby;
         public static bool InLobby;
@@ -93,9 +93,9 @@ namespace CoreCraft.Networking.Steam
             OnLobbyInvite.Invoke();
         }
 
-        public void JoinLobbyButton()
+        public async void JoinLobbyButton()
         {
-            SteamMatchmaking.JoinLobbyAsync(_invitationLobby.Id);
+            OnGameLobbyJoinRequest(_invitationLobby, SteamClient.SteamId);
         }
 
         private void OnLobbyGameCreated(Lobby lobby, uint ip, ushort port, SteamId id)
@@ -107,6 +107,12 @@ namespace CoreCraft.Networking.Steam
         {
             Logger.Instance.Log($"{friend.Name} joint the Game",ELogType.Debug);
 
+            _lobbyPlayersServer.Add(new NetworkingLobbyPlayerState(
+                0,
+                friend.Name,
+                false,
+                friend.Id
+                ));
             GameObject obj = Instantiate(_inLobbyFriend, _inLobbyContent);
             obj.GetComponentInChildren<TMP_Text>().text = friend.Name;
             SteamFriendsManager.Instance.AssignProfilePicture(obj, friend.Id);
@@ -188,7 +194,7 @@ namespace CoreCraft.Networking.Steam
 
             InLobby = true;
             OnLobbyJoin.Invoke();
-            NM.Singleton.StartClient();
+            bool test =  NM.Singleton.StartClient();
         }
 
         public async void CreateLobbyAsync()
