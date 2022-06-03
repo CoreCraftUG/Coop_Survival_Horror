@@ -95,7 +95,7 @@ namespace CoreCraft.Networking.Steam
 
         public void JoinLobbyButton()
         {
-            SteamMatchmaking.JoinLobbyAsync(_invitationFriend.Id);
+            SteamMatchmaking.JoinLobbyAsync(_invitationLobby.Id);
         }
 
         private void OnLobbyGameCreated(Lobby lobby, uint ip, ushort port, SteamId id)
