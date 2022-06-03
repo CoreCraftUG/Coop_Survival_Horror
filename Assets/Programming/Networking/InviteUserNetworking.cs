@@ -46,12 +46,24 @@ namespace CoreCraft.Networking.Steam
             _showInviteButton.gameObject.SetActive(false);
         }
 
-        private void Invite()
+        private async void Invite()
         {
             try
             {
-                Logger.Instance.Log($"Invited {id}", ELogType.Debug);
-                SteamLobbyManager.CurrentLobby.InviteFriend(id);
+                if (SteamLobbyManager.InLobby)
+                {
+                    Logger.Instance.Log($"Invited {id}", ELogType.Debug);
+                    SteamLobbyManager.CurrentLobby.InviteFriend(id);
+                }
+                else
+                {
+                    bool result = await SteamLobbyManager.CreateLobby();
+                    if (result)
+                    {
+                        Logger.Instance.Log($"Invited {id}", ELogType.Debug);
+                        SteamLobbyManager.CurrentLobby.InviteFriend(id);
+                    }
+                }
             }
             catch (Exception e)
             {

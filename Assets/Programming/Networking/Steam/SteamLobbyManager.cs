@@ -1,28 +1,53 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Steamworks;
 using Steamworks.Data;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 using Logger = CoreCraft.Core.Logger;
+using NM = Unity.Netcode.NetworkManager;
 
 namespace CoreCraft.Networking.Steam
 {
     public class SteamLobbyManager : MonoBehaviour
     {
         public static Lobby CurrentLobby;
+        public static bool InLobby;
 
         public UnityEvent OnLobbyCreate;
         public UnityEvent OnLobbyJoin;
         public UnityEvent OnLobbyLeave;
+        public UnityEvent OnLobbyInvite;
 
         [SerializeField] private GameObject _inLobbyFriend;
         [SerializeField] private Transform _inLobbyContent;
 
         public Dictionary<SteamId, GameObject> _inLobby = new Dictionary<SteamId, GameObject>();
+
+        private Friend _invitationFriend;
+        private Lobby _invitationLobby;
+
+        private List<NetworkingLobbyPlayerState> _lobbyPlayersServer = new List<NetworkingLobbyPlayerState>();
+        private List<NetworkingLobbyPlayerState> _lobbyPlayersClient = new List<NetworkingLobbyPlayerState>();
+
+        #region SyncPlayerStateList
+        [ServerRpc]
+        private void SyncLobbyListServerRpc()
+        {
+            SyncLobbyListClientRpc(_lobbyPlayersServer.ToArray());
+        }
+
+        [ClientRpc]
+        private void SyncLobbyListClientRpc(NetworkingLobbyPlayerState[] playersArray)
+        {
+            _lobbyPlayersClient = playersArray.ToList();
+        }
+        #endregion
 
         private void Start()
         {
@@ -35,13 +60,42 @@ namespace CoreCraft.Networking.Steam
             SteamMatchmaking.OnLobbyMemberDisconnected += OnLobbyMemberDisconnected;
             SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberDisconnected;
             SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
+            SteamMatchmaking.OnLobbyInvite += OnIncomingLobbyInvite;
             SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequest;
-            SteamMatchmaking.OnLobbyInvite += OnLobbyInvite;
         }
 
-        private void OnLobbyInvite(Friend friend, Lobby lobby)
+        private void OnDestroy()
+        {
+            try
+            {
+                SteamMatchmaking.OnLobbyCreated -= OnLobbyCreated;
+                SteamMatchmaking.OnLobbyEntered -= OnLobbyEnter;
+                SteamMatchmaking.OnLobbyMemberJoined -= OnLobbyMemberJoin;
+                SteamMatchmaking.OnChatMessage -= OnChatMassage;
+                SteamMatchmaking.OnLobbyMemberDisconnected -= OnLobbyMemberDisconnected;
+                SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyMemberDisconnected;
+                SteamMatchmaking.OnLobbyGameCreated -= OnLobbyGameCreated;
+                SteamMatchmaking.OnLobbyInvite -= OnIncomingLobbyInvite;
+                SteamFriends.OnGameLobbyJoinRequested -= OnGameLobbyJoinRequest;
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.Log($"{e}", ELogType.Error);
+                throw;
+            }
+        }
+
+        private void OnIncomingLobbyInvite(Friend friend, Lobby lobby)
         {
             Logger.Instance.Log($"{friend.Name} invited you into a Game",ELogType.Debug);
+            _invitationFriend = friend;
+            _invitationLobby = lobby;
+            OnLobbyInvite.Invoke();
+        }
+
+        public void JoinLobbyButton()
+        {
+            SteamMatchmaking.JoinLobbyAsync(_invitationFriend.Id);
         }
 
         private void OnLobbyGameCreated(Lobby lobby, uint ip, ushort port, SteamId id)
@@ -106,6 +160,7 @@ namespace CoreCraft.Networking.Steam
             {
                 Logger.Instance.Log($"Lobby successfully created", ELogType.Debug);
                 OnLobbyCreate.Invoke();
+                NM.Singleton.StartHost();
             }
         }
 
@@ -131,7 +186,9 @@ namespace CoreCraft.Networking.Steam
                 _inLobby.Add(friend.Id, obj2);
             }
 
+            InLobby = true;
             OnLobbyJoin.Invoke();
+            NM.Singleton.StartClient();
         }
 
         public async void CreateLobbyAsync()
@@ -143,7 +200,7 @@ namespace CoreCraft.Networking.Steam
             }
         }
 
-        private async Task<bool> CreateLobby()
+        public static async Task<bool> CreateLobby()
         {
             try
             {
@@ -172,10 +229,12 @@ namespace CoreCraft.Networking.Steam
 
         public void LeaveLobby()
         {
+            InLobby = false;
             try
             {
                 CurrentLobby.Leave();
                 OnLobbyLeave.Invoke();
+                NM.Singleton.Shutdown();
                 foreach (SteamId id in _inLobby.Keys)
                 {
                     Destroy(_inLobby[id]);
