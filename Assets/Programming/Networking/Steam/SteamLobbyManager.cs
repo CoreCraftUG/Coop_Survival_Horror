@@ -32,23 +32,6 @@ namespace CoreCraft.Networking.Steam
         private Friend _invitationFriend;
         private Lobby _invitationLobby;
 
-        private List<NetworkingLobbyPlayerState> _lobbyPlayersServer = new List<NetworkingLobbyPlayerState>();
-        private List<NetworkingLobbyPlayerState> _lobbyPlayersClient = new List<NetworkingLobbyPlayerState>();
-
-        #region SyncPlayerStateList
-        [ServerRpc]
-        private void SyncLobbyListServerRpc()
-        {
-            SyncLobbyListClientRpc(_lobbyPlayersServer.ToArray());
-        }
-
-        [ClientRpc]
-        private void SyncLobbyListClientRpc(NetworkingLobbyPlayerState[] playersArray)
-        {
-            _lobbyPlayersClient = playersArray.ToList();
-        }
-        #endregion
-
         private void Start()
         {
             DontDestroyOnLoad(this);
@@ -107,12 +90,6 @@ namespace CoreCraft.Networking.Steam
         {
             Logger.Instance.Log($"{friend.Name} joint the Game",ELogType.Debug);
 
-            _lobbyPlayersServer.Add(new NetworkingLobbyPlayerState(
-                0,
-                friend.Name,
-                false,
-                friend.Id
-                ));
             GameObject obj = Instantiate(_inLobbyFriend, _inLobbyContent);
             obj.GetComponentInChildren<TMP_Text>().text = friend.Name;
             SteamFriendsManager.Instance.AssignProfilePicture(obj, friend.Id);

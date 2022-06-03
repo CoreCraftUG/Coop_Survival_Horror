@@ -23,11 +23,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
     [SerializeField] private string _menuScene;
     [SerializeField] private string _lobbyScene;
     [SerializeField] private string _gameScene;
-
-    [Space, Header("Debug")]
-    [SerializeField] private Button _debugClientDataButton;
-
-
+    
     private Dictionary<string, PlayerData> clientData;
     private Dictionary<ulong, string> clientIdToGuid;
     private Dictionary<ulong, int> clientSceneMap;
@@ -56,16 +52,6 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
         clientData = new Dictionary<string, PlayerData>();
         clientIdToGuid = new Dictionary<ulong, string>();
         clientSceneMap = new Dictionary<ulong, int>();
-
-        _debugClientDataButton.onClick.AddListener(DebugClientData);
-    }
-
-    private void DebugClientData()
-    {
-        foreach (KeyValuePair<string, PlayerData> keyValuePair in clientData)
-        {
-            Logger.Instance.Log($"{keyValuePair.Value.PlayerName} Steam ID: {keyValuePair.Value.SteamId} Client ID: {keyValuePair.Value.ClientId}", ELogType.Debug);
-        }
     }
 
     private void OnDestroy()

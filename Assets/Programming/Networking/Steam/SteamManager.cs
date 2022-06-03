@@ -1,4 +1,5 @@
 using System;
+using Steamworks;
 using UnityEngine;
 using Logger = CoreCraft.Core.Logger;
 
@@ -14,6 +15,7 @@ namespace CoreCraft.Networking.Steam
             try
             {
                 Steamworks.SteamClient.Init(appId, true);
+                PlayerPrefs.SetString("PlayerName", $"{SteamClient.Name}");
                 Logger.Instance.Log("Steam is running",ELogType.Debug);
             }
             catch (Exception e)
