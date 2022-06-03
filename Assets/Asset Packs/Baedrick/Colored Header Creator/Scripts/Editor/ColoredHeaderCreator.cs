@@ -1,9 +1,8 @@
 // Created by Dedrick "Baedrick" Koh
 // GUI to create Headers in Hierarchy Window
-// Version 2.0.r0
+// Version 2.0.r1
 
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 

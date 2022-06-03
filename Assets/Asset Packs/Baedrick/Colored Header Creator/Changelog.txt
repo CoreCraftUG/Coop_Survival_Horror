@@ -1,3 +1,9 @@
+V 2.0.r1
+- (Credit to Glenneroo) Added assembly definitions.
+- (Credit to Glenneroo) Removed unused code.
+- (Credit to Glenneroo) Fixed "Not being able to build game" due to files being excluded.
+
+
 V 2.0.r0
 - Updated Colored Header Creator Window UI to be more approachable.
 - Updated how properties are saved on Header Game Objects (reinstall plugin if updating from 1.0.r0).
@@ -8,4 +14,4 @@ V 2.0.r0
 - General optimization of drawing Headers.
 
 V 1.0.r0
-- Initial Release
+- Initial Release.

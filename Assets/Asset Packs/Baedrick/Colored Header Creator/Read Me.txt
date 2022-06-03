@@ -1,5 +1,5 @@
 Created by Dedrick "Baedrick" Koh
-Version 2.0.r0
+Version 2.0.r1
 
 To open colored header creator use:
 Tools > Colored Header Creator
@@ -10,3 +10,6 @@ Suggestions to improve the code please reach out to me dedrickkoh1@gmail.com
 
 Any issues please report in an email to dedrickkoh1@gmail.com
 In the email please state what were the steps you took to encounter the error. Screenshots are encouraged.
+
+Contribution credit:
+- Glenneroo (general optimisation and bug fixes)
