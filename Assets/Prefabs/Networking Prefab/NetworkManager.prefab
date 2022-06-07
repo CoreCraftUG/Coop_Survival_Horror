@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 861893249898093525}
   - component: {fileID: 861893249898093526}
-  - component: {fileID: 861893249898093527}
+  - component: {fileID: 4483313063712711996}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -49,7 +49,7 @@ MonoBehaviour:
   LogLevel: 1
   NetworkConfig:
     ProtocolVersion: 0
-    NetworkTransport: {fileID: 861893249898093527}
+    NetworkTransport: {fileID: 4483313063712711996}
     PlayerPrefab: {fileID: 7403630570309503046, guid: dc99673d208da3d498458463ef689155,
       type: 3}
     NetworkPrefabs:
@@ -74,7 +74,7 @@ MonoBehaviour:
     LoadSceneTimeOut: 120
     SpawnTimeout: 1
     EnableNetworkLogs: 1
---- !u!114 &861893249898093527
+--- !u!114 &4483313063712711996
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -83,22 +83,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 861893249898093520}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
+  m_Script: {fileID: 11500000, guid: 44dd247a00edbfa44b77868d755af6ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ProtocolType: 0
-  m_MaxPacketQueueSize: 128
-  m_MaxPayloadSize: 6144
-  m_MaxSendQueueSize: 98304
-  m_HeartbeatTimeoutMS: 500
-  m_ConnectTimeoutMS: 1000
-  m_MaxConnectAttempts: 60
-  m_DisconnectTimeoutMS: 30000
-  ConnectionData:
-    Address: 127.0.0.1
-    Port: 7777
-    ServerListenAddress: 
-  DebugSimulator:
-    PacketDelayMS: 0
-    PacketJitterMS: 0
-    PacketDropRate: 0
+  steamAppId: 480
+  targetSteamId: 0
+  userSteamId: 0
