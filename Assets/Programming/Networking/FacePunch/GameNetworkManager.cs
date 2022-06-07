@@ -25,7 +25,7 @@ namespace CoreCraft.Networking.Facepuch
         [SerializeField] private int _maxPlayers;
         [SerializeField] private ELobbyType _lobbyType;
 
-        private FacepunchTransport _transprot;
+        private FacepunchTransport _transport;
         public Lobby? CurrentLobby { get; private set; } = null;
 
         private void Awake()
@@ -36,7 +36,7 @@ namespace CoreCraft.Networking.Facepuch
 
         private void Start()
         {
-            _transprot = GetComponent<FacepunchTransport>();
+            _transport = GetComponent<FacepunchTransport>();
 
             SteamMatchmaking.OnLobbyCreated += SteamMatchmakingOnOnLobbyCreated;
             SteamMatchmaking.OnLobbyEntered += SteamMatchmakingOnOnLobbyEntered;
@@ -84,7 +84,7 @@ namespace CoreCraft.Networking.Facepuch
             NM.Singleton.OnClientConnectedCallback += SingletonOnOnClientConnectedCallback;
             NM.Singleton.OnClientDisconnectCallback += SingletonOnOnClientDisconnectCallback;
 
-            _transprot.targetSteamId = id;
+            _transport.targetSteamId = id;
 
             if (NM.Singleton.StartClient())
                 Logger.Instance.Log($"Client has joined",ELogType.Debug);

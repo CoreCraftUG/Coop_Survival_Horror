@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Netcode.Transports.Facepunch;
 using Steamworks;
 using Steamworks.Data;
 using TMPro;
@@ -29,12 +30,15 @@ namespace CoreCraft.Networking.Steam
 
         public Dictionary<SteamId, GameObject> _inLobby = new Dictionary<SteamId, GameObject>();
 
+        private FacepunchTransport _transport;
+
         private Friend _invitationFriend;
         private Lobby _invitationLobby;
 
         private void Start()
         {
             DontDestroyOnLoad(this);
+            _transport = GetComponent<FacepunchTransport>();
 
             SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
             SteamMatchmaking.OnLobbyEntered += OnLobbyEnter;
@@ -177,6 +181,7 @@ namespace CoreCraft.Networking.Steam
             if (NM.Singleton.IsHost)
                 return;
 
+            _transport.targetSteamId = lobby.Id;
             NM.Singleton.StartClient();
         }
 
