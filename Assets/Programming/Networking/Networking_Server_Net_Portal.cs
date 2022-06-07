@@ -119,6 +119,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
 
     private void HandleClientDisconnect(ulong clientId)
     {
+        Logger.Instance.Log($"Client {clientId} disconnected",ELogType.Debug);
         clientSceneMap.Remove(clientId);
 
         if (clientIdToGuid.TryGetValue(clientId, out string guid))
@@ -146,6 +147,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
 
     private void HandleUserDisconnectRequested()
     {
+        Logger.Instance.Log($"Client {NM.Singleton.LocalClientId} requests disconnection", ELogType.Debug);
         HandleClientDisconnect(NM.Singleton.LocalClientId);
 
         NM.Singleton.Shutdown();
@@ -182,6 +184,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
 
     private void ApprovalCheck(byte[] connectionData, ulong clientId, NM.ConnectionApprovedDelegate callback)
     {
+        Logger.Instance.Log($"Client {clientId} requests Approval", ELogType.Debug);
         if (connectionData.Length > MaxConnectionPayload)
         {
             callback(false, 0, false, null, null);

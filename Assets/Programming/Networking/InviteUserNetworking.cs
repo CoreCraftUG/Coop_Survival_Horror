@@ -56,7 +56,7 @@ namespace CoreCraft.Networking.Steam
             _showInviteButton.gameObject.SetActive(false);
         }
 
-        private async void Invite()
+        private void Invite()
         {
             try
             {
@@ -67,8 +67,8 @@ namespace CoreCraft.Networking.Steam
                 }
                 else
                 {
-                    bool result = NM.Singleton.StartHost();
                     _invite = true;
+                    bool result = NM.Singleton.StartHost();
                     if (!result)
                     {
                         Logger.Instance.Log($"Server creation failed", ELogType.Error);
