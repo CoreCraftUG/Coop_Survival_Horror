@@ -7,7 +7,7 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using Logger = CoreCraft.Core.Logger;
 using NM = Unity.Netcode.NetworkManager;
 
 namespace CoreCraft.Networking
@@ -66,6 +66,7 @@ namespace CoreCraft.Networking
 
         public void StartHost()
         {
+            Logger.Instance.Log($"Started Hosting", ELogType.Debug);
             NM.Singleton.StartHost();
 
             RegisterClientMessageHandlers();
@@ -78,6 +79,7 @@ namespace CoreCraft.Networking
 
         private void HandleClientConnected(ulong clientId)
         {
+            Logger.Instance.Log($"Client: {clientId} connection in progress", ELogType.Debug);
             if (clientId != NM.Singleton.LocalClientId) { return; }
 
             HandleNetworkReady();

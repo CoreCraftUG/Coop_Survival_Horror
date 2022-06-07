@@ -8,6 +8,7 @@ using Unity.Networking.Transport.Error;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+using Logger = CoreCraft.Core.Logger;
 using NM = Unity.Netcode.NetworkManager;
 
 
@@ -61,6 +62,7 @@ namespace CoreCraft.Networking
 
         public void StartClient()
         {
+            Logger.Instance.Log($"Client started", ELogType.Debug);
             var payload = JsonUtility.ToJson(new NetworkingConnectionPayload()
             {
                 Password = PasswordManager.Instance.GetPassword(),
@@ -102,6 +104,7 @@ namespace CoreCraft.Networking
 
         private void HandleConnectionFinished(EConnectStatus status)
         {
+            Logger.Instance.Log($"Client connection state: {status}", ELogType.Debug);
             if (status != EConnectStatus.Success)
             {
                 DisconnectReason.SetDisconnectReason(status);
@@ -112,6 +115,7 @@ namespace CoreCraft.Networking
 
         private void HandleDisconnectReasonReceived(EConnectStatus status)
         {
+            Logger.Instance.Log($"Client disconnection state: {status}", ELogType.Debug);
             DisconnectReason.SetDisconnectReason(status);
         }
 
