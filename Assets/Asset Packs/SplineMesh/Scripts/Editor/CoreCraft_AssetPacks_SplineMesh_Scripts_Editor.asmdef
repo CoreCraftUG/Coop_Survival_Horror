@@ -1,0 +1,16 @@
+{
+    "name": "CoreCraft_AssetPacks_SplineMesh_Scripts_Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9ff9aeaa00c7e414bb393e6c12c3efce"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

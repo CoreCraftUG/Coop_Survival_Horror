@@ -1,0 +1,16 @@
+{
+    "name": "CoreCraft_AssetPacks_SplineMesh_Scripts_MeshProcessing",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1e492ba2a956b084f9008e269949c362"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

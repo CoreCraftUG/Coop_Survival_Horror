@@ -1,0 +1,17 @@
+{
+    "name": "CoreCraft_AssetPacks_BehaviorDesigner_Editor_ObjectDrawers",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2de4c5f533bf1934c9cd2cfd25b2dd7d",
+        "GUID:ec29365ca24ad574da1f33be45c60630"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -45,6 +45,7 @@ namespace CoreCraft.Networking.Steam
             SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
             SteamMatchmaking.OnLobbyInvite += OnIncomingLobbyInvite;
             SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequest;
+            NM.Singleton.OnServerStarted += HandleServerStarted;
         }
 
         private void OnDestroy()
@@ -60,6 +61,8 @@ namespace CoreCraft.Networking.Steam
                 SteamMatchmaking.OnLobbyGameCreated -= OnLobbyGameCreated;
                 SteamMatchmaking.OnLobbyInvite -= OnIncomingLobbyInvite;
                 SteamFriends.OnGameLobbyJoinRequested -= OnGameLobbyJoinRequest;
+                if (NM.Singleton)
+                    NM.Singleton.OnServerStarted -= HandleServerStarted;
             }
             catch (Exception e)
             {
@@ -143,7 +146,6 @@ namespace CoreCraft.Networking.Steam
             {
                 Logger.Instance.Log($"Lobby successfully created", ELogType.Debug);
                 OnLobbyCreate.Invoke();
-                NM.Singleton.StartHost();
             }
         }
 
@@ -171,11 +173,23 @@ namespace CoreCraft.Networking.Steam
 
             InLobby = true;
             OnLobbyJoin.Invoke();
-            bool test =  NM.Singleton.StartClient();
+            NM.Singleton.StartClient();
         }
 
         public async void CreateLobbyAsync()
         {
+            bool result = NM.Singleton.StartHost();
+            if (!result)
+            {
+                Logger.Instance.Log($"Server creation failed", ELogType.Error);
+            }
+        }
+
+        private async void HandleServerStarted()
+        {
+            if (!NM.Singleton.IsHost) { return; }
+
+            Logger.Instance.Log($"Server created starting Lobby", ELogType.Debug);
             bool result = await CreateLobby();
             if (!result)
             {

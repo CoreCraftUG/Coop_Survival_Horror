@@ -1,0 +1,16 @@
+{
+    "name": "CoreCraft_AssetPacks_MagicLightProbes_Extensions_Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:297298e96bd169749825525478571a51"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,16 @@
+{
+    "name": "CoreCraft_AssetPacks_Snappables_Scripts_Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ee6eaefbbd139e34082baefd169e6e8a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

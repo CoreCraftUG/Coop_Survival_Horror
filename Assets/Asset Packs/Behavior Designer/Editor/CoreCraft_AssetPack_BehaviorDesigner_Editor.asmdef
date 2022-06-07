@@ -1,0 +1,17 @@
+{
+    "name": "CoreCraft_AssetPack_BehaviorDesigner_Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:fbc560b9c4ef0af4b9600c61dcf90b26",
+        "GUID:2de4c5f533bf1934c9cd2cfd25b2dd7d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

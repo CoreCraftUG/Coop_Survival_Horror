@@ -1,0 +1,17 @@
+{
+    "name": "CoreCraft_AssetPacks_MagicLightProbes",
+    "rootNamespace": "",
+    "references": [
+        "GUID:fe411458eab9ae64a8e9381da8db92b2",
+        "GUID:297298e96bd169749825525478571a51"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

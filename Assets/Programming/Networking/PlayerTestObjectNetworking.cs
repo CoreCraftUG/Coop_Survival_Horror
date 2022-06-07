@@ -30,7 +30,7 @@ namespace CoreCraft.Networking
             {
                 Vector3 position = new Vector3(UnityEngine.Input.GetAxis("Vertical"), UnityEngine.Input.GetAxis("Horizontal"), 0);
 
-                UpdateClientPositionAndRotationServerRpc(position * _speed);
+                UpdateClientPositionAndRotationServerRpc(transform.position + position * _speed);
             }
 
             if (IsServer)

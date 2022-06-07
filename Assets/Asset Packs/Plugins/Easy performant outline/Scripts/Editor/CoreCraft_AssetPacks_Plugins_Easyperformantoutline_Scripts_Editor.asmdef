@@ -1,0 +1,16 @@
+{
+    "name": "CoreCraft_AssetPacks_Plugins_Easyperformantoutline_Scripts_Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:895d54485a57cec4d826011ec7e94aff"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
