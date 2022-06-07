@@ -176,7 +176,7 @@ namespace CoreCraft.Networking.Steam
             NM.Singleton.StartClient();
         }
 
-        public async void CreateLobbyAsync()
+        public void CreateLobbyAsync()
         {
             bool result = NM.Singleton.StartHost();
             if (!result)

@@ -1,8 +1,10 @@
 using System;
 using Steamworks;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using Logger = CoreCraft.Core.Logger;
+using NM = Unity.Netcode.NetworkManager;
 
 namespace CoreCraft.Networking.Steam
 {
@@ -13,14 +15,22 @@ namespace CoreCraft.Networking.Steam
         [SerializeField] private Button _showInviteButton;
 
         private float _tempTimer;
-        private SteamId id;
+        private SteamId _id;
+        private bool _invite;
 
         private void Start()
         {
             _showInviteButton.onClick.AddListener(ShowInviteButton);
             _inviteButton.onClick.AddListener(Invite);
+            NM.Singleton.OnServerStarted += HandleServerStarted;
         }
 
+        private void OnDestroy()
+        {
+            if (NM.Singleton)
+                NM.Singleton.OnServerStarted -= HandleServerStarted;
+        }
+        
         private void Update()
         {
             if (_tempTimer < _inviteTimer)
@@ -37,7 +47,7 @@ namespace CoreCraft.Networking.Steam
 
         public void SetSteamId(SteamId id)
         {
-            this.id = id;
+            this._id = id;
         }
 
         private void ShowInviteButton()
@@ -52,24 +62,34 @@ namespace CoreCraft.Networking.Steam
             {
                 if (SteamLobbyManager.InLobby)
                 {
-                    Logger.Instance.Log($"Invited {id}", ELogType.Debug);
-                    SteamLobbyManager.CurrentLobby.InviteFriend(id);
+                    Logger.Instance.Log($"Invited {_id}", ELogType.Debug);
+                    SteamLobbyManager.CurrentLobby.InviteFriend(_id);
                 }
                 else
                 {
-                    bool result = await SteamLobbyManager.CreateLobby();
-                    if (result)
+                    bool result = NM.Singleton.StartHost();
+                    _invite = true;
+                    if (!result)
                     {
-                        Logger.Instance.Log($"Invited {id}", ELogType.Debug);
-                        SteamLobbyManager.CurrentLobby.InviteFriend(id);
+                        Logger.Instance.Log($"Server creation failed", ELogType.Error);
                     }
                 }
             }
             catch (Exception e)
             {
-                Logger.Instance.Log($"Failed to Invite {id} reason: {e}", ELogType.Error);
+                Logger.Instance.Log($"Failed to Invite {_id} reason: {e}", ELogType.Error);
                 throw;
             }
+        }
+
+        private void HandleServerStarted()
+        {
+            if (!NM.Singleton.IsHost || !_invite)
+                return;
+
+            Logger.Instance.Log($"Server created starting Lobby", ELogType.Debug);
+            Logger.Instance.Log($"Invited {_id}", ELogType.Debug);
+            SteamLobbyManager.CurrentLobby.InviteFriend(_id);
         }
     }
 }
