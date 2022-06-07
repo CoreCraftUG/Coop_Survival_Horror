@@ -42,7 +42,9 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
     
     private void Start()
     {
-        maxPlayers = SteamLobbyManager.CurrentLobby.MaxMembers;
+        if (SteamLobbyManager.CurrentLobby.HasValue)
+            maxPlayers = SteamLobbyManager.CurrentLobby.Value.MaxMembers;
+
         _gameNetPortal = GetComponent<Networking_Game_Net_Portal>();
         _gameNetPortal.OnNetworkReadied += HandleNetworkReadied;
 

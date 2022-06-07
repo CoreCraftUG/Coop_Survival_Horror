@@ -16,7 +16,7 @@ namespace CoreCraft.Networking.Steam
 {
     public class SteamLobbyManager : NetworkBehaviour
     {
-        public static Lobby CurrentLobby;
+        public static Lobby? CurrentLobby;
         public static bool InLobby;
 
         public UnityEvent OnLobbyCreate;
@@ -102,7 +102,7 @@ namespace CoreCraft.Networking.Steam
         private void OnLobbyMemberDisconnected(Lobby lobby, Friend friend)
         {
             Logger.Instance.Log($"{friend.Name} disconnected from the Game", ELogType.Debug);
-            Logger.Instance.Log($"{CurrentLobby.Owner.Name} is now Owner of this Lobby", ELogType.Debug);
+            Logger.Instance.Log($"{CurrentLobby?.Owner.Name} is now Owner of this Lobby", ELogType.Debug);
 
             if (_inLobby.ContainsKey(friend.Id))
             {
@@ -159,7 +159,7 @@ namespace CoreCraft.Networking.Steam
 
             _inLobby.Add(SteamClient.SteamId, obj1);
 
-            foreach (Friend friend in CurrentLobby.Members)
+            foreach (Friend friend in CurrentLobby?.Members)
             {
                 if (friend.Id == SteamClient.SteamId)
                     continue;
@@ -173,6 +173,10 @@ namespace CoreCraft.Networking.Steam
 
             InLobby = true;
             OnLobbyJoin.Invoke();
+
+            if (NM.Singleton.IsHost)
+                return;
+
             NM.Singleton.StartClient();
         }
 
@@ -201,7 +205,7 @@ namespace CoreCraft.Networking.Steam
         {
             try
             {
-                var createLobbyOutput = await SteamMatchmaking.CreateLobbyAsync();
+                var createLobbyOutput = await SteamMatchmaking.CreateLobbyAsync(4);
                 if (!createLobbyOutput.HasValue)
                 {
                     Logger.Instance.Log($"Lobby created but currently not instantiated", ELogType.Error);
@@ -210,11 +214,10 @@ namespace CoreCraft.Networking.Steam
 
                 CurrentLobby = createLobbyOutput.Value;
 
-                CurrentLobby.SetPublic();
+                CurrentLobby?.SetPublic();
 
-                CurrentLobby.SetJoinable(true);
-
-                CurrentLobby.MaxMembers = 4;
+                CurrentLobby?.SetJoinable(true);
+                
                 return true;
             }
             catch (Exception e)
@@ -229,7 +232,7 @@ namespace CoreCraft.Networking.Steam
             InLobby = false;
             try
             {
-                CurrentLobby.Leave();
+                CurrentLobby?.Leave();
                 OnLobbyLeave.Invoke();
                 NM.Singleton.Shutdown();
                 foreach (SteamId id in _inLobby.Keys)

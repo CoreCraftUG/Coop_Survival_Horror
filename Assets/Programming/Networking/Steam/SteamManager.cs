@@ -1,7 +1,9 @@
 using System;
 using Steamworks;
 using UnityEngine;
+
 using Logger = CoreCraft.Core.Logger;
+using NM = Unity.Netcode.NetworkManager;
 
 namespace CoreCraft.Networking.Steam
 {
@@ -14,7 +16,7 @@ namespace CoreCraft.Networking.Steam
             DontDestroyOnLoad(this);
             try
             {
-                Steamworks.SteamClient.Init(appId, true);
+                // Steamworks.SteamClient.Init(appId, true);
                 PlayerPrefs.SetString("PlayerName", $"{SteamClient.Name}");
                 Logger.Instance.Log("Steam is running",ELogType.Debug);
             }
@@ -29,7 +31,12 @@ namespace CoreCraft.Networking.Steam
         {
             try
             {
-                Steamworks.SteamClient.Shutdown();
+                SteamLobbyManager.CurrentLobby?.Leave();
+
+                if (!NM.Singleton)
+                    return;
+
+                NM.Singleton.Shutdown();
             }
             catch (Exception e)
             {

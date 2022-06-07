@@ -63,7 +63,7 @@ namespace CoreCraft.Networking.Steam
                 if (SteamLobbyManager.InLobby)
                 {
                     Logger.Instance.Log($"Invited {_id}", ELogType.Debug);
-                    SteamLobbyManager.CurrentLobby.InviteFriend(_id);
+                    SteamLobbyManager.CurrentLobby?.InviteFriend(_id);
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace CoreCraft.Networking.Steam
 
             Logger.Instance.Log($"Server created starting Lobby", ELogType.Debug);
             Logger.Instance.Log($"Invited {_id}", ELogType.Debug);
-            SteamLobbyManager.CurrentLobby.InviteFriend(_id);
+            SteamLobbyManager.CurrentLobby?.InviteFriend(_id);
         }
     }
 }
