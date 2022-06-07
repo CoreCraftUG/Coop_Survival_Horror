@@ -30,7 +30,7 @@ namespace CoreCraft.Networking.Steam
 
         public Dictionary<SteamId, GameObject> _inLobby = new Dictionary<SteamId, GameObject>();
 
-        private FacepunchTransport _transport;
+        [SerializeField] private FacepunchTransport _transport;
 
         private Friend _invitationFriend;
         private Lobby _invitationLobby;
@@ -38,7 +38,6 @@ namespace CoreCraft.Networking.Steam
         private void Start()
         {
             DontDestroyOnLoad(this);
-            _transport = GetComponent<FacepunchTransport>();
 
             SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
             SteamMatchmaking.OnLobbyEntered += OnLobbyEnter;
