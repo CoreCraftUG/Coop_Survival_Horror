@@ -31,18 +31,26 @@ namespace CoreCraft
             _leaveLobbyButton.onClick.AddListener(LeaveLobby);
             SteamMatchmaking.OnLobbyInvite += SteamMatchmakingOnOnLobbyInvite;
             SteamMatchmaking.OnLobbyEntered += SteamMatchmakingOnOnLobbyEntered;
+            SteamMatchmaking.OnLobbyMemberJoined += SteamMatchmakingOnOnLobbyMemberJoined;
         }
 
         private void OnDestroy()
         {
             SteamMatchmaking.OnLobbyInvite -= SteamMatchmakingOnOnLobbyInvite;
             SteamMatchmaking.OnLobbyEntered -= SteamMatchmakingOnOnLobbyEntered;
+            SteamMatchmaking.OnLobbyMemberJoined -= SteamMatchmakingOnOnLobbyMemberJoined;
         }
 
         private void SteamMatchmakingOnOnLobbyEntered(Lobby lobby)
         {
             _lobbyActivePanel.SetActive(true);
             _lobbyInactivePanel.SetActive(false);
+            LobbyPlayerNames.Instance.CreateNamePanel(SteamClient.Name);
+        }
+
+        private void SteamMatchmakingOnOnLobbyMemberJoined(Lobby lobby, Friend friend)
+        {
+            LobbyPlayerNames.Instance.CreateNamePanel(friend.Name);
         }
 
         private void SteamMatchmakingOnOnLobbyInvite(Friend friend, Lobby lobby)
@@ -68,6 +76,7 @@ namespace CoreCraft
         private void LeaveLobby()
         {
             GameNetworkManager.Instance.Disconnect();
+            LobbyPlayerNames.Instance.ClearContent();
             _lobbyActivePanel.SetActive(false);
             _lobbyInactivePanel.SetActive(true);
         }
