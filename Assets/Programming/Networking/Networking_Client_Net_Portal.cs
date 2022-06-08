@@ -71,12 +71,16 @@ namespace CoreCraft.Networking
                 PlayerName = PlayerPrefs.GetString("PlayerName", "Missing Name"),
                 SteamId = SteamClient.SteamId
             });
+            Logger.Instance.Log($"Payload set: {payload}", ELogType.Debug);
 
             byte[] payloadBytes = Encoding.UTF8.GetBytes(payload);
+            Logger.Instance.Log($"Payload converted to bytes:  {payloadBytes}", ELogType.Debug);
 
             NM.Singleton.NetworkConfig.ConnectionData = payloadBytes;
+            Logger.Instance.Log($"ConnectionData set", ELogType.Debug);
 
             NM.Singleton.StartClient();
+            Logger.Instance.Log($"Client started", ELogType.Debug);
         }
 
         private void HandleNetworkReadied()
