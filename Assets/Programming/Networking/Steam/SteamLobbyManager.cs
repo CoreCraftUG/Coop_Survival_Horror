@@ -139,7 +139,7 @@ namespace CoreCraft.Networking.Steam
             }
         }
 
-        private void OnLobbyCreated(Result result, Lobby lobby)
+        private void OnLobbyCreated(Result result, Lobby lobby) //#################################################
         {
             if (result != Result.OK)
             {
@@ -181,12 +181,13 @@ namespace CoreCraft.Networking.Steam
                 return;
 
             _transport.targetSteamId = lobby.Id;
-            NM.Singleton.StartClient();
+            Networking_Client_Net_Portal.Instance.StartClient();
+            // NM.Singleton.StartClient();
         }
 
         public void CreateLobbyAsync()
         {
-            bool result = NM.Singleton.StartHost();
+            bool result = Networking_Game_Net_Portal.Instance.StartHost();
             if (!result)
             {
                 Logger.Instance.Log($"Server creation failed", ELogType.Error);

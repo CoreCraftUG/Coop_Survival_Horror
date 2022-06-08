@@ -16,8 +16,9 @@ namespace CoreCraft.Networking.Steam
             DontDestroyOnLoad(this);
             try
             {
-                // Steamworks.SteamClient.Init(appId, true);
-                PlayerPrefs.SetString("PlayerName", $"{SteamClient.Name}");
+                if (SteamClient.IsValid)
+                    PlayerPrefs.SetString("PlayerName", $"{SteamClient.Name}");
+
                 Logger.Instance.Log("Steam is running",ELogType.Debug);
             }
             catch (Exception e)

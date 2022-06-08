@@ -64,12 +64,13 @@ namespace CoreCraft.Networking
             }
         }
 
-        public void StartHost()
+        public bool StartHost()
         {
             Logger.Instance.Log($"Started Hosting", ELogType.Debug);
-            NM.Singleton.StartHost();
+            bool result = NM.Singleton.StartHost();
 
             RegisterClientMessageHandlers();
+            return result;
         }
 
         public void RequestDisconnect()
