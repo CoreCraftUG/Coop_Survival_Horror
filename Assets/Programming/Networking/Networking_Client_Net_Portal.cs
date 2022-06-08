@@ -63,7 +63,7 @@ namespace CoreCraft.Networking
         public void StartClient()
         {
             Logger.Instance.Log($"Client started", ELogType.Debug);
-            var payload = JsonUtility.ToJson(new NetworkingConnectionPayload()
+            /*var payload = JsonUtility.ToJson(new NetworkingConnectionPayload()
             {
                 Password = PasswordManager.Instance.GetPassword(),
                 ClientGUID = Guid.NewGuid().ToString(),
@@ -77,7 +77,7 @@ namespace CoreCraft.Networking
             Logger.Instance.Log($"Payload converted to bytes:  {payloadBytes}", ELogType.Debug);
 
             NM.Singleton.NetworkConfig.ConnectionData = payloadBytes;
-            Logger.Instance.Log($"ConnectionData set", ELogType.Debug);
+            Logger.Instance.Log($"ConnectionData set", ELogType.Debug);*/
 
             NM.Singleton.StartClient();
             Logger.Instance.Log($"Client started", ELogType.Debug);
