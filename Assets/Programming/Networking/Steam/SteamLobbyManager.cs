@@ -180,7 +180,7 @@ namespace CoreCraft.Networking.Steam
             if (NM.Singleton.IsHost)
                 return;
 
-            _transport.targetSteamId = lobby.Id;
+            _transport.targetSteamId = lobby.Owner.Id;
             Networking_Client_Net_Portal.Instance.StartClient();
             // NM.Singleton.StartClient();
         }
