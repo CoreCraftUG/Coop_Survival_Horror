@@ -4,24 +4,29 @@ using UnityEngine;
 
 namespace CoreCraft.Inventory
 {
+    [CreateAssetMenu(fileName = "NewPartsInventory", menuName = "InventorySystem/Inventories/ToolsInventory")]
     public class InventoryTools : InventoryBase
     {
-        public List<ItemsBase> ToolInventory;
-        private void Awake()
+
+
+        public override void Awake()
         {
-            InventoryType = EItemType.Tool;
+            base.Awake();
+            ItemList.Clear();
         }
+
+        
 
         public override void AddItem(ItemsBase item, int amount)
         {
             base.AddItem(item, amount);
 
-            if (ToolInventory.Count >= _slotCount)
+            if (ItemList.Count >= _slotCount)
                 return;
 
-            ToolInventory.Add(item);
+            ItemList.Add(new InventorySlot(item, 1));
         }
-
+        /*
         public override void RemoveItem(ItemsBase item, int amount)
         {
             base.RemoveItem(item, amount);
@@ -29,6 +34,7 @@ namespace CoreCraft.Inventory
             if (ToolInventory.Contains(item))
                 ToolInventory.Remove(item);
         }
+        */
     }
 
    

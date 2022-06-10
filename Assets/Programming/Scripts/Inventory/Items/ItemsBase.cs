@@ -9,9 +9,10 @@ namespace CoreCraft.Inventory
         Tool,
         Part
     }
+    [CreateAssetMenu(fileName = "New Base Item", menuName = "InventorySystem/Items/DefaultItem")]
     public class ItemsBase : ScriptableObject
     {
-        private GameObject _visual;
+        public GameObject Visual;
         public EItemType ItemType;
         [TextArea(15, 20)]
         public string Description;

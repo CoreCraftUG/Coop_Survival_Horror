@@ -72,8 +72,30 @@
         {
             "name": "PlayerMap",
             "id": "29784d00-4126-4c34-8898-25c87258164a",
-            "actions": [],
-            "bindings": []
+            "actions": [
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "65e830db-edee-48dd-9a1f-e831bb3a069d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f6f86b65-7217-4f6c-9a0c-040e8972cd36",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

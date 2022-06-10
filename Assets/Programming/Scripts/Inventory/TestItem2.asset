@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b42547b228627cf48af0b984b9eb8bc4, type: 3}
-  m_Name: TestPartInventory
+  m_Script: {fileID: 11500000, guid: cf8acb420d9f3df44b4fb9f291af2c1a, type: 3}
+  m_Name: TestItem2
   m_EditorClassIdentifier: 
-  InventoryType: 1
-  _slotCount: 5
-  ItemList: []
+  ItemType: 0
+  Description: 

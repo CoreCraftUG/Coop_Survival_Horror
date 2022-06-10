@@ -96,8 +96,30 @@ namespace CoreCraft.Input
         {
             ""name"": ""PlayerMap"",
             ""id"": ""29784d00-4126-4c34-8898-25c87258164a"",
-            ""actions"": [],
-            ""bindings"": []
+            ""actions"": [
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""65e830db-edee-48dd-9a1f-e831bb3a069d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""f6f86b65-7217-4f6c-9a0c-040e8972cd36"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -126,6 +148,7 @@ namespace CoreCraft.Input
             m_MenuMap_Escape = m_MenuMap.FindAction("Escape", throwIfNotFound: true);
             // PlayerMap
             m_PlayerMap = asset.FindActionMap("PlayerMap", throwIfNotFound: true);
+            m_PlayerMap_Interact = m_PlayerMap.FindAction("Interact", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -234,10 +257,12 @@ namespace CoreCraft.Input
         // PlayerMap
         private readonly InputActionMap m_PlayerMap;
         private IPlayerMapActions m_PlayerMapActionsCallbackInterface;
+        private readonly InputAction m_PlayerMap_Interact;
         public struct PlayerMapActions
         {
             private @PlayerInput m_Wrapper;
             public PlayerMapActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Interact => m_Wrapper.m_PlayerMap_Interact;
             public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -247,10 +272,16 @@ namespace CoreCraft.Input
             {
                 if (m_Wrapper.m_PlayerMapActionsCallbackInterface != null)
                 {
+                    @Interact.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteract;
+                    @Interact.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteract;
+                    @Interact.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteract;
                 }
                 m_Wrapper.m_PlayerMapActionsCallbackInterface = instance;
                 if (instance != null)
                 {
+                    @Interact.started += instance.OnInteract;
+                    @Interact.performed += instance.OnInteract;
+                    @Interact.canceled += instance.OnInteract;
                 }
             }
         }
@@ -272,6 +303,7 @@ namespace CoreCraft.Input
         }
         public interface IPlayerMapActions
         {
+            void OnInteract(InputAction.CallbackContext context);
         }
     }
 }

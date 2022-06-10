@@ -7,20 +7,15 @@ namespace CoreCraft.Inventory
     [CreateAssetMenu(fileName = "NewPartsInventory", menuName = "InventorySystem/Inventories/PartsInventory")]
     public class InventoryParts : InventoryBase
     {
-        
-
         public override void AddItem(ItemsBase item, int amount)
         {
             base.AddItem(item, amount);
-
             if (ItemList.Count >= _slotCount)
                 return;
-
             for(int i = 0; i < ItemList.Count; i++)
             {
                 if (ItemList[i].Item != item)
                     continue;
-
                 else
                 {
                     ItemList[i].Amount += amount;
