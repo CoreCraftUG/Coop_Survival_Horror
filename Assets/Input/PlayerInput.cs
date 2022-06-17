@@ -244,6 +244,98 @@ namespace CoreCraft.Input
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""MinigameMap"",
+            ""id"": ""6332501c-5726-4c7b-bb7b-dbaae53dc495"",
+            ""actions"": [
+                {
+                    ""name"": ""MiniGame1"",
+                    ""type"": ""Button"",
+                    ""id"": ""60068268-25d8-4b31-89af-6fe02355d7be"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MiniGame2"",
+                    ""type"": ""Button"",
+                    ""id"": ""1a72fe8b-9d97-4d0d-833b-7cc3b3f729b7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""ec0156c1-e02c-459b-af25-156bef33b6e8"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiniGame1"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""a1007589-c9ef-4e70-a4b0-a35222e238f1"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiniGame1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""4d3554de-1b14-4242-8e36-d2de99ea4078"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiniGame1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""a23c76b3-43ab-4142-a2f1-7ca18be8b5dd"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiniGame2"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""5857089e-8b86-4693-a33b-b654bc37c2af"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiniGame2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""41562502-2e25-46d1-891c-90a64f87133b"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiniGame2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -277,6 +369,10 @@ namespace CoreCraft.Input
             m_PlayerMap_Look = m_PlayerMap.FindAction("Look", throwIfNotFound: true);
             m_PlayerMap_Run = m_PlayerMap.FindAction("Run", throwIfNotFound: true);
             m_PlayerMap_Crouch = m_PlayerMap.FindAction("Crouch", throwIfNotFound: true);
+            // MinigameMap
+            m_MinigameMap = asset.FindActionMap("MinigameMap", throwIfNotFound: true);
+            m_MinigameMap_MiniGame1 = m_MinigameMap.FindAction("MiniGame1", throwIfNotFound: true);
+            m_MinigameMap_MiniGame2 = m_MinigameMap.FindAction("MiniGame2", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -446,6 +542,47 @@ namespace CoreCraft.Input
             }
         }
         public PlayerMapActions @PlayerMap => new PlayerMapActions(this);
+
+        // MinigameMap
+        private readonly InputActionMap m_MinigameMap;
+        private IMinigameMapActions m_MinigameMapActionsCallbackInterface;
+        private readonly InputAction m_MinigameMap_MiniGame1;
+        private readonly InputAction m_MinigameMap_MiniGame2;
+        public struct MinigameMapActions
+        {
+            private @PlayerInput m_Wrapper;
+            public MinigameMapActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @MiniGame1 => m_Wrapper.m_MinigameMap_MiniGame1;
+            public InputAction @MiniGame2 => m_Wrapper.m_MinigameMap_MiniGame2;
+            public InputActionMap Get() { return m_Wrapper.m_MinigameMap; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(MinigameMapActions set) { return set.Get(); }
+            public void SetCallbacks(IMinigameMapActions instance)
+            {
+                if (m_Wrapper.m_MinigameMapActionsCallbackInterface != null)
+                {
+                    @MiniGame1.started -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame1;
+                    @MiniGame1.performed -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame1;
+                    @MiniGame1.canceled -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame1;
+                    @MiniGame2.started -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame2;
+                    @MiniGame2.performed -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame2;
+                    @MiniGame2.canceled -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame2;
+                }
+                m_Wrapper.m_MinigameMapActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    @MiniGame1.started += instance.OnMiniGame1;
+                    @MiniGame1.performed += instance.OnMiniGame1;
+                    @MiniGame1.canceled += instance.OnMiniGame1;
+                    @MiniGame2.started += instance.OnMiniGame2;
+                    @MiniGame2.performed += instance.OnMiniGame2;
+                    @MiniGame2.canceled += instance.OnMiniGame2;
+                }
+            }
+        }
+        public MinigameMapActions @MinigameMap => new MinigameMapActions(this);
         private int m_KeyboardSchemeIndex = -1;
         public InputControlScheme KeyboardScheme
         {
@@ -468,6 +605,11 @@ namespace CoreCraft.Input
             void OnLook(InputAction.CallbackContext context);
             void OnRun(InputAction.CallbackContext context);
             void OnCrouch(InputAction.CallbackContext context);
+        }
+        public interface IMinigameMapActions
+        {
+            void OnMiniGame1(InputAction.CallbackContext context);
+            void OnMiniGame2(InputAction.CallbackContext context);
         }
     }
 }
