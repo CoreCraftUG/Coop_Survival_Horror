@@ -12,13 +12,12 @@ namespace CoreCraft.Minigames
 
         [SerializeField] private List<Image> _turnables;
         private float[] angles = { 0, 45, 90, 135, 190, 235, 270, 315 };
-        [SerializeField] private float[] _correctAngles = { 0, 180, 90, 90 };
+        [SerializeField] private float[] _correctAngles;
         [SerializeField] private float _range = 5;
         [SerializeField] private List<Button> _buttons;
         private int _activeButton;
-        
-        [SerializeField] private GameObject _canvas;
-        [SerializeField] private bool _canvasActive = true;
+        [SerializeField] private MinigameManager _minigameManager;
+
 
         public void Awake()
         {
@@ -26,7 +25,7 @@ namespace CoreCraft.Minigames
             {
                 img.transform.eulerAngles =  new Vector3(0, 0, Random.Range(0, 360));
             }
-           
+            _inputBool = true;
         }
 
         public void CheckIfCorrect()
@@ -46,26 +45,22 @@ namespace CoreCraft.Minigames
         }
 
         public void FixedUpdate()
-        {          
-            if(_turnables[_activeButton].color != Color.green)
-                _turnables[_activeButton].transform.Rotate(0, 0, Time.deltaTime * 40 * _inputValue);
-            if (_inputValue == 0 && _inputBool)
+        {
+            Debug.Log(_minigameManager._inputValue);
+            if(_minigameManager._inputValue != 0)
+                Debug.Log(_minigameManager._inputValue);
+            if(_turnables[_activeButton].color != Color.green && _minigameManager._inputValue != 0)
+                _turnables[_activeButton].transform.Rotate(0, 0, Time.deltaTime * 40 * _minigameManager._inputValue);
+            if (_minigameManager._inputValue == 0)
                 CheckIfCorrect();
-        }
-
-        public void HideMinigame()
-        {
-            _canvasActive = !_canvasActive;
-            _canvas.SetActive(_canvasActive);
-        }
-
-        public void RotationAction(InputAction.CallbackContext context)
-        {
-            if(context.phase == InputActionPhase.Performed)
+            else
             {
-        
+                _turnables[_activeButton].transform.Rotate(0, 0, 0);
             }
+            
         }
+
+
 
         public void Rotate1()
         {
