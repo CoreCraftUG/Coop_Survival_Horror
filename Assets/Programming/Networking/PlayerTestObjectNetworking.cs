@@ -28,22 +28,30 @@ namespace CoreCraft.Networking
         {
             if (IsClient && IsOwner)
             {
-                Vector3 position = new Vector3(UnityEngine.Input.GetAxis("Vertical"), UnityEngine.Input.GetAxis("Horizontal"), 0);
+                Vector3 position = new Vector3(UnityEngine.Input.GetAxis("Horizontal"), UnityEngine.Input.GetAxis("Vertical"), 0);
 
-                UpdateClientPositionAndRotationServerRpc(transform.position + position * _speed);
+                UpdateClientPositionServerRpc(/*transform.position +*/ position * _speed * Time.deltaTime);
             }
 
             if (IsServer)
             {
                 if (_networkPosition.Value != Vector3.zero)
                 {
-                    _characterController.SimpleMove(_networkPosition.Value);
+                    _characterController.Move(_networkPosition.Value);
+                }
+            }
+
+            if (IsHost && IsOwner)
+            {
+                if (UnityEngine.Input.GetKey(KeyCode.Space))
+                {
+                    Networking_Server_Net_Portal.Instance.EndRound();
                 }
             }
         }
 
         [ServerRpc]
-        public void UpdateClientPositionAndRotationServerRpc(Vector3 position)
+        public void UpdateClientPositionServerRpc(Vector3 position)
         {
             _networkPosition.Value = position;
         }

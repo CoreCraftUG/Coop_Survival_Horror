@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using BehaviorDesigner.Runtime.Tasks;
 using CoreCraft.Core;
 using CoreCraft.Networking;
 using CoreCraft.Networking.Steam;
@@ -34,6 +36,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
     private Networking_Game_Net_Portal _gameNetPortal;
 
     private NetworkVariable<FixedString32Bytes> _serverPassword = new NetworkVariable<FixedString32Bytes>();
+    private string _password;
 
     private void Awake()
     {
@@ -68,6 +71,19 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
         NM.Singleton.OnServerStarted -= HandleServerStarted;
     }
 
+    public void DebugServerNetPortalDictionaries()
+    {
+        foreach (KeyValuePair<string, PlayerData> keyValuePair in clientData)
+        {
+            Logger.Instance.Log($"Player: {keyValuePair.Value.PlayerName} clientGuid: {keyValuePair.Key}",ELogType.Debug);
+        }
+
+        foreach (KeyValuePair<ulong, string> keyValuePair in clientIdToGuid)
+        {
+            Logger.Instance.Log($"Client id: {keyValuePair.Key} clientGuid: {keyValuePair.Value}", ELogType.Debug);
+        }
+    }
+
     public PlayerData? GetPlayerData(ulong clientId)
     {
         if (clientIdToGuid.TryGetValue(clientId, out string clientGuid))
@@ -98,9 +114,19 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
 
     public void EndRound()
     {
+        var keyValuePair = NM.Singleton.ConnectedClients.Single(valueTuple => valueTuple.Key == NM.Singleton.LocalClientId);
+        NetworkClient client = keyValuePair.Value;
+        DespawnPlayerObjectServerRpc(client);
+
         gameInProgress = false;
 
         NM.Singleton.SceneManager.LoadScene(_lobbyScene, LoadSceneMode.Single);
+    }
+
+    [ServerRpc]
+    private void DespawnPlayerObjectServerRpc(NetworkClient client)
+    {
+        client.PlayerObject.Despawn(false);
     }
 
     private void HandleNetworkReadied()
@@ -116,6 +142,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
         if (NM.Singleton.IsHost)
         {
             clientSceneMap[NM.Singleton.LocalClientId] = SceneManager.GetActiveScene().buildIndex;
+            // PlayerSpawnManager.Instance.SpawnPlayerCharacterServerRpc(NM.Singleton.LocalClientId, Vector3.zero, Quaternion.identity);
         }
     }
 
@@ -173,6 +200,17 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
     private void SetPasswordServerRpc()
     {
         _serverPassword.Value = PasswordManager.Instance.GetPassword();
+        Logger.Instance.Log($"Server Password test:" +
+                            $"\nNetworking Variable server password \"{_serverPassword.Value}\"" +
+                            $"\nlocal variable server password\"{_password}\"" +
+                            $"\n\"_serverPassword.Value == _password {_serverPassword.Value == _password}\"",
+            ELogType.Debug);
+    }
+
+    public void SetPassword()
+    {
+        _password = PasswordManager.Instance.GetPassword();
+        Logger.Instance.Log($"Server Password: \"{_password}\"", ELogType.Debug);
     }
 
     private void ClearData()
@@ -214,18 +252,22 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
         // }
 
         //TODO: Return Connection Fail Reason
-        if (connectionPayload.Password == _serverPassword.Value)
+        Logger.Instance.Log($"Server Password: {_password}",ELogType.Debug);
+        if (connectionPayload.Password == _password)
         {
             gameReturnStatus = EConnectStatus.PasswordIncorrect;
+            Logger.Instance.Log($"Connection failed: {gameReturnStatus.ToString()}", ELogType.Error);
         }
         else if (gameInProgress)
         {
             //TODO: Reconnect Client
             gameReturnStatus = EConnectStatus.GameInProgress;
+            Logger.Instance.Log($"Connection failed: {gameReturnStatus.ToString()}", ELogType.Error);
         }
         else if (clientData.Count >= maxPlayers)
         {
             gameReturnStatus = EConnectStatus.ServerFull;
+            Logger.Instance.Log($"Connection failed: {gameReturnStatus.ToString()}", ELogType.Error);
         }
 
         if (gameReturnStatus == EConnectStatus.Success)
@@ -233,6 +275,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
             clientSceneMap[clientId] = connectionPayload.ClientScene;
             clientIdToGuid[clientId] = connectionPayload.ClientGUID;
             clientData[connectionPayload.ClientGUID] = new PlayerData(connectionPayload.PlayerName, clientId, connectionPayload.SteamId);
+            Logger.Instance.Log($"Connection successful: {gameReturnStatus.ToString()}", ELogType.Debug);
         }
 
         callback(false, 0, true, null, null);

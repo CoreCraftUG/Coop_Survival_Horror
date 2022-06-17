@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Steamworks;
+using Steamworks.Data;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +13,8 @@ namespace CoreCraft.Networking
 {
     public class LobbyManager : NetworkBehaviour
     {
+        public static LobbyManager Instance { get; private set; }
+
         [SerializeField] private Button _startGameButton;
 
 
@@ -19,6 +23,8 @@ namespace CoreCraft.Networking
 
         private List<NetworkingLobbyPlayerState> _lobbyPlayersServer = new List<NetworkingLobbyPlayerState>();
         private List<NetworkingLobbyPlayerState> _lobbyPlayersClient = new List<NetworkingLobbyPlayerState>();
+
+        private Dictionary<ulong, PlayerInfo> _playerInfo = new Dictionary<ulong, PlayerInfo>();
 
         #region SyncPlayerStateList
         [ServerRpc]
@@ -34,23 +40,87 @@ namespace CoreCraft.Networking
         }
         #endregion
 
-        private void Start()
+        private void Awake()
         {
-            if (IsServer)
+            if (Instance == null)
             {
-                _startGameButton.gameObject.SetActive(true);
-                _startGameButton.onClick.AddListener(OnStartGame);
-
-                NM.Singleton.OnClientConnectedCallback += HandleClientConnected;
-                NM.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
-
-                foreach (NetworkClient client in NM.Singleton.ConnectedClientsList)
+                Instance = this;
+            }
+            else
+            {
+                if (Instance != this)
                 {
-                    HandleClientConnected(client.ClientId);
+                    Logger.Instance.Log($"There is more than one {this} in the scene", ELogType.Error);
+                    Debug.LogError($"There is more than one {this} in the scene");
                 }
             }
+        }
 
-            _debugClientDataButton.onClick.AddListener(DebugClientData);
+        private void Start()
+        {
+            NM.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            NM.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+            SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
+        }
+
+        [ServerRpc]
+        public void ReadyUpServerRpc(ulong clientId, bool ready)
+        {
+            NetworkingLobbyPlayerState playerState = _lobbyPlayersServer.Single(state => state.ClientId == clientId);
+            _lobbyPlayersServer.Remove(_lobbyPlayersServer.Single(state => state.ClientId == clientId));
+            playerState.IsReady = ready;
+            _lobbyPlayersServer.Add(playerState);
+            SyncLobbyListServerRpc();
+            ReadyUpClientRpc();
+        }
+
+        [ClientRpc]
+        private void ReadyUpClientRpc()
+        {
+            bool ready = _playerInfo.All(pair => _lobbyPlayersClient.Single(state => state.ClientId == pair.Value.ClientId).IsReady != false);
+
+            foreach (KeyValuePair<ulong, PlayerInfo> keyValuePair in _playerInfo)
+            {
+                keyValuePair.Value.Ready(_lobbyPlayersClient.Single(state => state.ClientId == keyValuePair.Key).IsReady);
+                keyValuePair.Value.HostReady(ready);
+            }
+        }
+
+        public void RegisterPlayerInfo(ulong clientId, PlayerInfo info)
+        {
+            _playerInfo.Add(clientId,info);
+        }
+
+        private void OnDestroy()
+        {
+            if (NM.Singleton)
+            {
+                NM.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+                NM.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
+                SteamMatchmaking.OnLobbyCreated -= OnLobbyCreated;
+            }
+        }
+
+        private void OnLobbyCreated(Result result, Lobby lobby)
+        {
+            if (IsServer && result == Result.OK)
+            {
+                Debug.Log($"{NM.Singleton.LocalClientId}");
+                PlayerData? playerData = Networking_Server_Net_Portal.Instance.GetPlayerData(0);
+
+                if (!playerData.HasValue)
+                    return;
+
+                _lobbyPlayersServer.Add(
+                    new NetworkingLobbyPlayerState(
+                        playerData.Value.ClientId,
+                        playerData.Value.PlayerName,
+                        false,
+                        playerData.Value.SteamId
+                    ));
+
+                SyncLobbyListServerRpc();
+            }
         }
 
         private void OnStartGame()
@@ -64,29 +134,34 @@ namespace CoreCraft.Networking
 
         private void HandleClientConnected(ulong clientId)
         {
-            PlayerData? playerData = Networking_Server_Net_Portal.Instance.GetPlayerData(clientId);
+            if (IsServer)
+            {
+                PlayerData? playerData = Networking_Server_Net_Portal.Instance.GetPlayerData(clientId);
 
-            if (!playerData.HasValue)
-                return;
+                if (!playerData.HasValue)
+                    return;
 
-            _lobbyPlayersServer.Add(
-                new NetworkingLobbyPlayerState(
-                    playerData.Value.ClientId,
-                    playerData.Value.PlayerName,
-                    false,
-                    playerData.Value.SteamId
-                ));
+                _lobbyPlayersServer.Add(
+                    new NetworkingLobbyPlayerState(
+                        playerData.Value.ClientId,
+                        playerData.Value.PlayerName,
+                        false,
+                        playerData.Value.SteamId
+                    ));
 
-            SyncLobbyListServerRpc();
+                SyncLobbyListServerRpc();
+            }
         }
 
-        private void DebugClientData()
+        public void DebugClientData()
         {
-            if (NM.Singleton.IsServer)
+            Logger.Instance.Log($"Debug client data", ELogType.Debug);
+            if (NM.Singleton.IsHost)
             {
-                foreach (NetworkingLobbyPlayerState playerState in _lobbyPlayersServer)
+                Logger.Instance.Log($"Registered clients {_lobbyPlayersClient.Count}", ELogType.Debug);
+                foreach (NetworkingLobbyPlayerState playerState in _lobbyPlayersClient)
                 {
-                    Logger.Instance.Log($"{playerState.PlayerName} Steam ID: {playerState.SteamId} Client ID: {playerState.ClientId}", ELogType.Debug);
+                    Logger.Instance.Log($"{playerState.PlayerName} Steam ID: {playerState.SteamId} Client ID: {playerState.ClientId} Ready: {playerState.IsReady}", ELogType.Debug);
                 }
             }
         }

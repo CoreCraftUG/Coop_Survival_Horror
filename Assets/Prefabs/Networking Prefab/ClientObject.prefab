@@ -239,7 +239,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ppImage: {fileID: 456218998272228548}
-  _speed: 2
+  _speed: 50
+  _networkPosition:
+    m_InternalValue: {x: 0, y: 0, z: 0}
 --- !u!114 &6908185433204693490
 MonoBehaviour:
   m_ObjectHideFlags: 0

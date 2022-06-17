@@ -68,6 +68,7 @@ namespace CoreCraft.Networking
         {
             Logger.Instance.Log($"Started Hosting", ELogType.Debug);
             bool result = NM.Singleton.StartHost();
+            Networking_Server_Net_Portal.Instance.SetPassword();
 
             RegisterClientMessageHandlers();
             return result;
@@ -85,6 +86,8 @@ namespace CoreCraft.Networking
 
             HandleNetworkReady();
             NM.Singleton.SceneManager.OnSceneEvent += HandleSceneEvent;
+            // PlayerSpawnManager.Instance.SpawnPlayerCharacterServerRpc(clientId, Vector3.zero, Quaternion.identity);
+            Logger.Instance.Log($"Spawned Player Character for Client: {clientId}", ELogType.Debug);
         }
 
         private void HandleSceneEvent(SceneEvent sceneEvent)

@@ -637,6 +637,13 @@ MonoBehaviour:
   _inviteTimer: 2
   _inviteButton: {fileID: 8800310109883419885}
   _showInviteButton: {fileID: 6936651519539859553}
+  _nameText: {fileID: 7266815645816786667}
+  _ppFrame: {fileID: 7266815645347727300}
+  _sameGameColor: {r: 0.34613752, g: 0.7264151, b: 0.09251513, a: 1}
+  _onlineColor: {r: 0.49803925, g: 0.83921576, b: 0.98823535, a: 1}
+  _otherGameColor: {r: 0.3019758, g: 0.5471698, b: 0.3379059, a: 1}
+  _awayColor: {r: 0.27042544, g: 0.4696056, b: 0.5566038, a: 1}
+  _offlineColor: {r: 0.34509805, g: 0.34509805, b: 0.34509805, a: 1}
 --- !u!1 &7266815645816786665
 GameObject:
   m_ObjectHideFlags: 0
@@ -983,7 +990,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.15686275, g: 0.15686275, b: 0.15686275, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1087,7 +1094,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 5532868006295520754}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:

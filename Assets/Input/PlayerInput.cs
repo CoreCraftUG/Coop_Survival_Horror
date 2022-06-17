@@ -105,6 +105,42 @@ namespace CoreCraft.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""9b2d588c-760c-4312-bae8-8ba13bb50ec5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""c2a67070-f077-4dcd-9560-b38200ca98ed"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""4522a9fb-eebb-47e0-bca1-a8b7a418e4d8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""8f10f414-b504-4361-8991-ac4e503982b1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -116,6 +152,94 @@ namespace CoreCraft.Input
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""c2d04bfc-5606-4e8b-b379-8278bb95cd66"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""a156473b-8e49-440e-b6ad-940f903394ea"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""9047d9b1-6efd-431a-9dff-c7b8fcad307e"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""f01bc1ea-4dc7-4161-a309-6ba45b0d3e70"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""e38a6a16-2afc-41d2-a06c-6ef8ebc84d72"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e7462ae-81ce-4cdd-a3b4-de5a92996cd5"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""beb80a59-79ea-43c2-8c4b-5dd7fa9239f9"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""56f4b34c-0d48-4e43-94a6-034033a59724"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -149,6 +273,10 @@ namespace CoreCraft.Input
             // PlayerMap
             m_PlayerMap = asset.FindActionMap("PlayerMap", throwIfNotFound: true);
             m_PlayerMap_Interact = m_PlayerMap.FindAction("Interact", throwIfNotFound: true);
+            m_PlayerMap_Move = m_PlayerMap.FindAction("Move", throwIfNotFound: true);
+            m_PlayerMap_Look = m_PlayerMap.FindAction("Look", throwIfNotFound: true);
+            m_PlayerMap_Run = m_PlayerMap.FindAction("Run", throwIfNotFound: true);
+            m_PlayerMap_Crouch = m_PlayerMap.FindAction("Crouch", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -258,11 +386,19 @@ namespace CoreCraft.Input
         private readonly InputActionMap m_PlayerMap;
         private IPlayerMapActions m_PlayerMapActionsCallbackInterface;
         private readonly InputAction m_PlayerMap_Interact;
+        private readonly InputAction m_PlayerMap_Move;
+        private readonly InputAction m_PlayerMap_Look;
+        private readonly InputAction m_PlayerMap_Run;
+        private readonly InputAction m_PlayerMap_Crouch;
         public struct PlayerMapActions
         {
             private @PlayerInput m_Wrapper;
             public PlayerMapActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
             public InputAction @Interact => m_Wrapper.m_PlayerMap_Interact;
+            public InputAction @Move => m_Wrapper.m_PlayerMap_Move;
+            public InputAction @Look => m_Wrapper.m_PlayerMap_Look;
+            public InputAction @Run => m_Wrapper.m_PlayerMap_Run;
+            public InputAction @Crouch => m_Wrapper.m_PlayerMap_Crouch;
             public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -275,6 +411,18 @@ namespace CoreCraft.Input
                     @Interact.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteract;
                     @Interact.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteract;
                     @Interact.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteract;
+                    @Move.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnMove;
+                    @Move.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnMove;
+                    @Move.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnMove;
+                    @Look.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnLook;
+                    @Look.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnLook;
+                    @Look.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnLook;
+                    @Run.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnRun;
+                    @Run.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnRun;
+                    @Run.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnRun;
+                    @Crouch.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouch;
+                    @Crouch.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouch;
+                    @Crouch.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouch;
                 }
                 m_Wrapper.m_PlayerMapActionsCallbackInterface = instance;
                 if (instance != null)
@@ -282,6 +430,18 @@ namespace CoreCraft.Input
                     @Interact.started += instance.OnInteract;
                     @Interact.performed += instance.OnInteract;
                     @Interact.canceled += instance.OnInteract;
+                    @Move.started += instance.OnMove;
+                    @Move.performed += instance.OnMove;
+                    @Move.canceled += instance.OnMove;
+                    @Look.started += instance.OnLook;
+                    @Look.performed += instance.OnLook;
+                    @Look.canceled += instance.OnLook;
+                    @Run.started += instance.OnRun;
+                    @Run.performed += instance.OnRun;
+                    @Run.canceled += instance.OnRun;
+                    @Crouch.started += instance.OnCrouch;
+                    @Crouch.performed += instance.OnCrouch;
+                    @Crouch.canceled += instance.OnCrouch;
                 }
             }
         }
@@ -304,6 +464,10 @@ namespace CoreCraft.Input
         public interface IPlayerMapActions
         {
             void OnInteract(InputAction.CallbackContext context);
+            void OnMove(InputAction.CallbackContext context);
+            void OnLook(InputAction.CallbackContext context);
+            void OnRun(InputAction.CallbackContext context);
+            void OnCrouch(InputAction.CallbackContext context);
         }
     }
 }
