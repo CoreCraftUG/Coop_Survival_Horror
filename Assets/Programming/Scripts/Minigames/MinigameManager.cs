@@ -13,8 +13,10 @@ namespace CoreCraft.Minigames
         public bool _inputBool2;
         [SerializeField] private GameObject _hanoi;
         [SerializeField] private GameObject _turnShapes;
-        private bool _hanoiActive = true;
-        private bool _turnShapesActive = true;
+        [SerializeField] private GameObject _circleGame;
+        private bool _hanoiActive = false;
+        private bool _turnShapesActive = false;
+        private bool _circleGameActive = true;
         // Start is called before the first frame update
         public void MinigameInput(InputAction.CallbackContext context)
         {
@@ -36,6 +38,10 @@ namespace CoreCraft.Minigames
                 _inputValue2 = context.ReadValue<float>();
                 _inputBool2 = true;
             }
+            else
+            {
+                _inputValue2 = 0;
+            }
         }
 
         public void HanoiSwitch()
@@ -51,6 +57,10 @@ namespace CoreCraft.Minigames
             }
 
             _hanoiActive = !_hanoiActive;
+            _turnShapesActive = false;
+            _turnShapes.SetActive(false);
+            _circleGameActive = false;
+            _circleGame.SetActive(false);
         }
 
         public void TurnShapesSwitch()
@@ -66,6 +76,29 @@ namespace CoreCraft.Minigames
             }
 
             _turnShapesActive = !_turnShapesActive;
+            _circleGameActive = false;
+            _circleGame.SetActive(false);
+            _hanoiActive = false;
+            _hanoi.SetActive(false);
+        }
+
+        public void CircleGameSwitch()
+        {
+            switch (_circleGameActive)
+            {
+                case true:
+                    _circleGame.SetActive(false);
+                    break;
+                case false:
+                    _circleGame.SetActive(true);
+                    break;
+            }
+
+            _circleGameActive = !_circleGameActive;
+            _turnShapesActive = false;
+            _turnShapes.SetActive(false);
+            _hanoiActive = false;
+            _hanoi.SetActive(false);
         }
     }
 }
