@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 731146545423415806}
   - component: {fileID: 731146545423415807}
   - component: {fileID: 1862120279580455819}
-  - component: {fileID: 5666224099594953645}
   - component: {fileID: 7332732334079117910}
   m_Layer: 0
   m_Name: SteamManager
@@ -72,25 +71,7 @@ MonoBehaviour:
   OnLobbyInvite:
     m_PersistentCalls:
       m_Calls: []
-  _inLobbyFriend: {fileID: 0}
-  _inLobbyContent: {fileID: 0}
---- !u!114 &5666224099594953645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 731146545423415804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65cd900820cdae647860083734a033a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _profilePicture: {fileID: 0}
-  _userName: {fileID: 0}
-  _friendContent: {fileID: 0}
-  _friendObject: {fileID: 7266815645782822385, guid: 5d31da36de1d179489c86a790c97d82b,
-    type: 3}
+  _transport: {fileID: 0}
 --- !u!114 &7332732334079117910
 MonoBehaviour:
   m_ObjectHideFlags: 0

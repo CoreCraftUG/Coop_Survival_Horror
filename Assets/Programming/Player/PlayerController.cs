@@ -20,6 +20,8 @@ namespace CoreCraft.Character
 
         private NetworkVariable<Vector3> _networkPosition = new NetworkVariable<Vector3>();
 
+        private bool _hasPlayer = true;
+
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -29,11 +31,24 @@ namespace CoreCraft.Character
         {
             SetPositionServerRpc(_physicsCharacter.PlayerObjectAttachmentTransform.position);
 
+            if (_hasPlayer)
+                _playerCamera.transform.gameObject.transform.position = _networkPosition.Value;
+
             if (IsServer)
-            {
                 transform.position = _networkPosition.Value;
-            }
         }
+
+        public void SetCamera(PlayerCamera camera)
+        {
+            _playerCamera = camera;
+        }
+
+        public void SetPhysicsCharacter(PhysicsCharacter character)
+        {
+            _physicsCharacter = character;
+        }
+
+        public void SetHasPlayer(bool state) => _hasPlayer = state;
 
         public void WalkInput(InputAction.CallbackContext callback)
         {
@@ -58,59 +73,59 @@ namespace CoreCraft.Character
 
         public void CrouchInput(InputAction.CallbackContext callback)
         {
-            if (CrouchToggle && callback.phase == InputActionPhase.Started)
+            switch (CrouchToggle)
             {
-                switch (_physicsCharacter.CharacterState.Value)
-                {
-                    case ECharacterState.Crouch:
-                        _physicsCharacter.RequestStateChange(ECharacterState.Walk);
-                        break;
-                    default:
-                        _physicsCharacter.RequestStateChange(ECharacterState.Crouch);
-                        break;
-                }
-
-            }
-            else if (!CrouchToggle)
-            {
-                switch (callback.phase)
-                {
-                    case InputActionPhase.Started:
-                        _physicsCharacter.RequestStateChange(ECharacterState.Crouch);
-                        break;
-                    case InputActionPhase.Canceled:
-                        _physicsCharacter.RequestStateChange(ECharacterState.Walk);
-                        break;
-                }
+                case true when callback.phase == InputActionPhase.Started:
+                    switch (_physicsCharacter.CharacterState.Value)
+                    {
+                        case ECharacterState.Crouch:
+                            _physicsCharacter.RequestStateChange(ECharacterState.Walk);
+                            break;
+                        default:
+                            _physicsCharacter.RequestStateChange(ECharacterState.Crouch);
+                            break;
+                    }
+                    break;
+                case false:
+                    switch (callback.phase)
+                    {
+                        case InputActionPhase.Started:
+                            _physicsCharacter.RequestStateChange(ECharacterState.Crouch);
+                            break;
+                        case InputActionPhase.Canceled:
+                            _physicsCharacter.RequestStateChange(ECharacterState.Walk);
+                            break;
+                    }
+                    break;
             }
         }
 
         public void RunInput(InputAction.CallbackContext callback)
         {
-            if (RunToggle && callback.phase == InputActionPhase.Started)
+            switch (RunToggle)
             {
-                switch (_physicsCharacter.CharacterState.Value)
-                {
-                    case ECharacterState.Run:
-                        _physicsCharacter.RequestStateChange(ECharacterState.Walk);
-                        break;
-                    default:
-                        _physicsCharacter.RequestStateChange(ECharacterState.Run);
-                        break;
-                }
-                
-            }
-            else if(!RunToggle)
-            {
-                switch (callback.phase)
-                {
-                    case InputActionPhase.Started:
-                        _physicsCharacter.RequestStateChange(ECharacterState.Run);
-                        break;
-                    case InputActionPhase.Canceled:
-                        _physicsCharacter.RequestStateChange(ECharacterState.Walk);
-                        break;
-                }
+                case true when callback.phase == InputActionPhase.Started:
+                    switch (_physicsCharacter.CharacterState.Value)
+                    {
+                        case ECharacterState.Run:
+                            _physicsCharacter.RequestStateChange(ECharacterState.Walk);
+                            break;
+                        default:
+                            _physicsCharacter.RequestStateChange(ECharacterState.Run);
+                            break;
+                    }
+                    break;
+                case false:
+                    switch (callback.phase)
+                    {
+                        case InputActionPhase.Started:
+                            _physicsCharacter.RequestStateChange(ECharacterState.Run);
+                            break;
+                        case InputActionPhase.Canceled:
+                            _physicsCharacter.RequestStateChange(ECharacterState.Walk);
+                            break;
+                    }
+                    break;
             }
         }
 

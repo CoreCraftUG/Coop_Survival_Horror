@@ -17,6 +17,8 @@ namespace CoreCraft.Networking.Steam
 {
     public class SteamLobbyManager : NetworkBehaviour
     {
+        public static SteamLobbyManager Instance { get; private set; }
+
         public static Lobby? CurrentLobby;
         public static bool InLobby;
 
@@ -25,15 +27,28 @@ namespace CoreCraft.Networking.Steam
         public UnityEvent OnLobbyLeave;
         public UnityEvent OnLobbyInvite;
 
-        [SerializeField] private GameObject _inLobbyFriend;
-        [SerializeField] private Transform _inLobbyContent;
-
-        public Dictionary<SteamId, GameObject> _inLobby = new Dictionary<SteamId, GameObject>();
 
         [SerializeField] private FacepunchTransport _transport;
 
         private Friend _invitationFriend;
         private Lobby _invitationLobby;
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                if (Instance != this)
+                {
+                    Destroy(this);
+                    Logger.Instance.Log($"There is more than one {this} in the scene", ELogType.Error);
+                    Debug.LogError($"There is more than one {this} in the scene");
+                }
+            }
+        }
 
         private void Start()
         {
@@ -96,22 +111,17 @@ namespace CoreCraft.Networking.Steam
         {
             Logger.Instance.Log($"{friend.Name} joint the Game",ELogType.Debug);
 
-            GameObject obj = Instantiate(_inLobbyFriend, _inLobbyContent);
-            obj.GetComponentInChildren<TMP_Text>().text = friend.Name;
-            SteamFriendsManager.Instance.AssignProfilePicture(obj, friend.Id);
-            _inLobby.Add(friend.Id, obj);
+            if (!GameManager.Instance.GameStarted.Value)
+                LobbyManager.Instance.CreateLobbyCard(friend);
         }
 
         private void OnLobbyMemberDisconnected(Lobby lobby, Friend friend)
         {
             Logger.Instance.Log($"{friend.Name} disconnected from the Game", ELogType.Debug);
             Logger.Instance.Log($"{CurrentLobby?.Owner.Name} is now Owner of this Lobby", ELogType.Debug);
-
-            if (_inLobby.ContainsKey(friend.Id))
-            {
-                Destroy(_inLobby[friend.Id]);
-                _inLobby.Remove(friend.Id);
-            }
+            
+            if (!GameManager.Instance.GameStarted.Value)
+                LobbyManager.Instance.DestroyLobbyCard(friend);
         }
 
         private void OnLobbyMemberLeave(Lobby lobby, Friend friend)
@@ -156,22 +166,15 @@ namespace CoreCraft.Networking.Steam
         {
             Logger.Instance.Log($"Joint lobby as Client", ELogType.Debug);
 
-            GameObject obj1 = Instantiate(_inLobbyFriend, _inLobbyContent);
-            obj1.GetComponentInChildren<TMP_Text>().text = SteamClient.Name;
-            SteamFriendsManager.Instance.AssignProfilePicture(obj1, SteamClient.SteamId);
 
-            _inLobby.Add(SteamClient.SteamId, obj1);
+            LobbyManager.Instance.CreateLobbyCard(new Friend(SteamClient.SteamId));
 
             foreach (Friend friend in CurrentLobby?.Members)
             {
                 if (friend.Id == SteamClient.SteamId)
                     continue;
 
-                GameObject obj2 = Instantiate(_inLobbyFriend, _inLobbyContent);
-                obj2.GetComponentInChildren<TMP_Text>().text = friend.Name;
-                SteamFriendsManager.Instance.AssignProfilePicture(obj2, friend.Id);
-
-                _inLobby.Add(friend.Id, obj2);
+                LobbyManager.Instance.CreateLobbyCard(friend);
             }
 
             InLobby = true;
@@ -182,7 +185,6 @@ namespace CoreCraft.Networking.Steam
 
             _transport.targetSteamId = lobby.Owner.Id;
             Networking_Client_Net_Portal.Instance.StartClient();
-            // NM.Singleton.StartClient();
         }
 
         public void CreateLobbyAsync()
@@ -240,11 +242,7 @@ namespace CoreCraft.Networking.Steam
                 CurrentLobby?.Leave();
                 OnLobbyLeave.Invoke();
                 NM.Singleton.Shutdown();
-                foreach (SteamId id in _inLobby.Keys)
-                {
-                    Destroy(_inLobby[id]);
-                }
-                _inLobby.Clear();
+                LobbyManager.Instance.ClearLobbyCards();
             }
             catch (Exception e)
             {

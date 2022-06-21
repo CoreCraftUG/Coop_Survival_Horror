@@ -8,9 +8,7 @@ namespace CoreCraft.Character
     public class PlayerCamera : NetworkBehaviour
     {
         [SerializeField] private bool _lookConstrained = true;
-        [SerializeField] private Transform _cameraPositionTransform;
 
-        private bool _hasPlayer = true;
 
         private NetworkVariable<float> _xRotation = new NetworkVariable<float>();
         private NetworkVariable<float> _yRotation = new NetworkVariable<float>();
@@ -22,10 +20,6 @@ namespace CoreCraft.Character
 
         void Update()
         {
-            Debug.DrawLine(transform.position, transform.position + (transform.forward * 2), Color.red);
-            if (_hasPlayer)
-                transform.position = _cameraPositionTransform.position;
-
             if (IsServer)
             {
                 transform.rotation = Quaternion.Euler(_xRotation.Value, _yRotation.Value,0.0f);
@@ -46,10 +40,6 @@ namespace CoreCraft.Character
             if (_lookConstrained)
                 _xRotation.Value = Mathf.Clamp(_xRotation.Value, -90.0f, 90.0f);
         }
-
-        public void SetHasPlayer(bool state) => _hasPlayer = state;
-
-        public void SetCameraPositionTransform(Transform position) => _cameraPositionTransform = position;
 
         public void LockCursor(bool lockState)
         {

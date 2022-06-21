@@ -108,7 +108,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
     public void StartGame()
     {
         gameInProgress = true;
-
+        GameManager.Instance.GameStartedServerRpc(true);
         NM.Singleton.SceneManager.LoadScene(_gameScene, LoadSceneMode.Single);
     }
 
@@ -120,7 +120,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
 
         gameInProgress = false;
 
-        NM.Singleton.SceneManager.LoadScene(_lobbyScene, LoadSceneMode.Single);
+        NM.Singleton.SceneManager.LoadScene(_menuScene, LoadSceneMode.Single);
     }
 
     [ServerRpc]

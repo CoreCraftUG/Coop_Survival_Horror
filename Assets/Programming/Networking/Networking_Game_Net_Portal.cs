@@ -76,6 +76,10 @@ namespace CoreCraft.Networking
 
         public void RequestDisconnect()
         {
+            if (NM.Singleton.IsHost)
+            {
+
+            }
             OnUserDisconnectRequested?.Invoke();
         }
 

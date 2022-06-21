@@ -1,5 +1,6 @@
 using System;
-using BehaviorDesigner.Runtime.Tasks.Unity.UnityLayerMask;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,31 +9,7 @@ using Logger = CoreCraft.Core.Logger;
 
 namespace CoreCraft.Character
 {
-    public enum ECharacterState
-    {
-        Walk,
-        Run,
-        Crouch
-    }
-
-    public enum ECharacterSoundType
-    {
-
-    }
-
-    struct GroundedData
-    {
-        public bool IsGround;
-        public bool IsSlope;
-        public bool IsMoving;
-        public bool StepAhead;
-        public Vector3 GroundNormal;
-        public Vector3 GroundPosition;
-        public GameObject GroundObject;
-    }
-
-    [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsCharacter : NetworkBehaviour
+    public class PhysicsController : NetworkBehaviour
     {
         [Header("Events")]
         public UnityEvent<Vector3> WalkingEvent = new UnityEvent<Vector3>();
@@ -41,7 +18,7 @@ namespace CoreCraft.Character
         public UnityEvent<ECharacterSoundType> CharacterSoundEvent = new UnityEvent<ECharacterSoundType>();
 
         [Space, Header("Components")]
-        [SerializeField, ReadOnly] private Rigidbody _rigidbody;
+        [SerializeField] private CharacterController _cController;
         [SerializeField] private Transform _orientationTransform;
         [SerializeField] private Transform _playerObjectAttachmentTransform;
         [SerializeField] private CapsuleCollider _characterCollider;
@@ -58,16 +35,12 @@ namespace CoreCraft.Character
 
         [Space, Header("Ground Check")]
         [SerializeField] private float _playerHeight;
-        [SerializeField] private float _groundDrag;
+        [SerializeField] private float _airDrag;
         [SerializeField] private LayerMask _groundLayer;
 
         private bool _grounded;
 
-        [Space, Header("Steps")]
-        [SerializeField] private float _stepOffset;
-        [SerializeField] private float _playerRadius;
-
-        [Space,Header("Physics")]
+        [Space, Header("Physics")]
         [SerializeField] private float _gravityMultiplier;
         [SerializeField] private float _maxSlopeAngle;
 
@@ -89,8 +62,7 @@ namespace CoreCraft.Character
 
         private void Awake()
         {
-            _rigidbody = GetComponent<Rigidbody>();
-            _rigidbody.freezeRotation = true;
+            _cController = GetComponent<CharacterController>();
             StateChangeRequestServerRpc(ECharacterState.Walk);
             PlayerObjectAttachmentTransform = _playerObjectAttachmentTransform;
         }
@@ -99,8 +71,8 @@ namespace CoreCraft.Character
         {
 
         }
-        
-        private void LateUpdate()
+
+        private void Update()
         {
             if (!IsServer) return;
 
@@ -117,29 +89,19 @@ namespace CoreCraft.Character
             switch (_groundedData.IsGround)
             {
                 case true when CanTraverseGround():
-
-                    /*
-                    StepCheck();
-                    if (_groundedData.StepAhead && !_groundedData.IsSlope)
-                        _rigidbody.AddForce(transform.up * _stepOffset * _currentSpeed, ForceMode.Force);
-                    */
-
                     orientation = Vector3.ProjectOnPlane(orientation, _groundedData.GroundNormal).normalized;
-                    _rigidbody.AddForce(orientation * _currentSpeed, ForceMode.Force);
+                    _cController.SimpleMove(orientation * _currentSpeed);
 
                     transform.parent = _groundedData.IsMoving ? _groundedData.GroundObject.transform : null;
-                    _rigidbody.drag = _groundDrag;
-                    SpeedControl();
                     break;
                 case false:
-                    _rigidbody.AddForce(orientation.normalized * _currentSpeed * _airControl, ForceMode.Force);
-                    _rigidbody.drag = 0;
+                    _cController.SimpleMove(orientation.normalized * _currentSpeed / _airDrag * _airControl);
                     break;
             }
 
             if (!_groundedData.IsMoving)
             {
-                _rigidbody.AddForce(Vector3.down * _gravityMultiplier, ForceMode.Force);
+                // _cController.Move(Vector3.down * _gravityMultiplier);
             }
 
             if (_movementRequested.Value)
@@ -171,13 +133,6 @@ namespace CoreCraft.Character
             }
         }
 
-        private void StepCheck()
-        {
-            Vector3 origin = new Vector3(transform.position.x, (transform.position.y - _playerHeight / 2) + _stepOffset , transform.position.z) + (transform.forward * _playerRadius);
-            _groundedData.StepAhead = Physics.Raycast(origin,transform.up * -1, _stepOffset , _groundLayer);
-            Debug.DrawRay(origin, transform.up * -_stepOffset, Color.red);
-        }
-
         private void FixedUpdate()
         {
             if (IsServer)
@@ -187,7 +142,7 @@ namespace CoreCraft.Character
         private void GroundCheck()
         {
             Debug.DrawRay(transform.position, Vector3.down * _playerHeight * 0.6f, Color.yellow);
-            if (Physics.Raycast(transform.position, Vector3.down,out RaycastHit hit, _playerHeight * 0.6f, _groundLayer))
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, _playerHeight * 0.6f, _groundLayer))
             {
                 _groundedData.IsGround = true;
                 _groundedData.GroundNormal = hit.normal;
@@ -198,27 +153,6 @@ namespace CoreCraft.Character
             else
             {
                 _groundedData.IsGround = false;
-            }
-        }
-
-        private void SpeedControl()
-        {
-            if (_groundedData.IsSlope)
-            {
-                if (_rigidbody.velocity.magnitude > _currentSpeed)
-                {
-                    Vector3 limitedVelocity = _rigidbody.velocity.normalized * _currentSpeed;
-                    _rigidbody.velocity = new Vector3(limitedVelocity.x, _rigidbody.velocity.y, limitedVelocity.z);
-                }
-            }
-            else
-            {
-                Vector3 flatVelocity = new Vector3(_rigidbody.velocity.x, 0, _rigidbody.velocity.z);
-                if (flatVelocity.magnitude > _currentSpeed)
-                {
-                    Vector3 limitedVelocity = flatVelocity.normalized * _currentSpeed;
-                    _rigidbody.velocity = new Vector3(limitedVelocity.x, _rigidbody.velocity.y, limitedVelocity.z);
-                }
             }
         }
 
@@ -259,10 +193,13 @@ namespace CoreCraft.Character
             if (CharacterState.Value == ECharacterState.Crouch)
             {
                 _characterCollider.height = _crouchHeight;
-                _rigidbody.AddForce(Vector3.down * 5.0f, ForceMode.Impulse);
+                _cController.height = _crouchHeight;
             }
             else
+            {
                 _characterCollider.height = _standardWalkHeight;
+                _cController.height = _standardWalkHeight;
+            }
 
             CharacterStateEvent.Invoke(CharacterState.Value);
             Logger.Instance.Log($"{CharacterState.Value}", ELogType.Debug);

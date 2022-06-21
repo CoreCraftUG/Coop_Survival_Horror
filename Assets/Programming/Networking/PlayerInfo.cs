@@ -36,14 +36,14 @@ namespace CoreCraft.Networking
                     _startGameButton.onClick.AddListener(StartGame);
                 }
             }
-            LobbyManager.Instance.RegisterPlayerInfo(ClientId, this);
+            GameManager.Instance.RegisterPlayerInfo(ClientId, this);
         }
 
         private void StartGame()
         {
             if (NM.Singleton.IsHost)
             {
-                //Start Game
+                GameManager.Instance.OnStartGame();
             }
         }
 
@@ -56,7 +56,7 @@ namespace CoreCraft.Networking
         {
             _ready = !_ready;
             _readyToggle.isOn = _ready;
-            LobbyManager.Instance.ReadyUpServerRpc(ClientId, _ready);
+            GameManager.Instance.ReadyUpServerRpc(ClientId, _ready);
         }
 
         public void HostReady(bool ready)

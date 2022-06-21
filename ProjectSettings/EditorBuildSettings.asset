@@ -12,9 +12,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Networking/Networking_Test_Scene.unity
     guid: 08a1bcd6813c0d747bfd23767cd8851a
   - enabled: 1
-    path: Assets/Scenes/Networking/Lobby_Test_Scene.unity
+    path: Assets/Scenes/Networking/Game_Scene.unity
     guid: 1d7a75f567728ee45affa11dc3b67ef0
   - enabled: 1
     path: Assets/Scenes/Networking/Game_PlayerCharacter_Test_Scene.unity
     guid: 0c3ec8249218fbc46ab1a6ce2604c32c
+  - enabled: 1
+    path: Assets/Scenes/Networking/SetupStartScene.unity
+    guid: 52d2efd03cb84694dba91e92cca56ee4
   m_configObjects: {}
