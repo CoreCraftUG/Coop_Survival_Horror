@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace CoreCraft.Inventory
@@ -7,29 +8,21 @@ namespace CoreCraft.Inventory
     [CreateAssetMenu(fileName = "NewPartsInventory", menuName = "InventorySystem/Inventories/ToolsInventory")]
     public class InventoryTools : InventoryBase
     {
-
-
-        public override void Awake()
+        [ServerRpc(RequireOwnership = false)]
+        public override void AddItemServerRpc(ItemsBase item, int amount)
         {
-            base.Awake();
-            ItemList.Clear();
-        }
+            base.AddItemServerRpc(item, amount);
 
-        
-
-        public override void AddItem(ItemsBase item, int amount)
-        {
-            base.AddItem(item, amount);
-
-            if (ItemList.Count >= _slotCount)
+            if (ItemServerList.Count >= SlotCount)
                 return;
 
-            ItemList.Add(new InventorySlot(item, 1));
+            ItemServerList.Add(new InventorySlot(item, 1));
+            SyncItemListServerRpc();
         }
         /*
-        public override void RemoveItem(ItemsBase item, int amount)
+        public override void RemoveItemServerRpc(ItemsBase item, int amount)
         {
-            base.RemoveItem(item, amount);
+            base.RemoveItemServerRpc(item, amount);
 
             if (ToolInventory.Contains(item))
                 ToolInventory.Remove(item);

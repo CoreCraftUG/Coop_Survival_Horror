@@ -10,8 +10,8 @@ namespace CoreCraft.Character
 {
     public class PlayerController : NetworkBehaviour
     {
-        [SerializeField] private PhysicsCharacter _physicsCharacter;
-        [SerializeField] private PlayerCamera _playerCamera;
+        private PhysicsCharacter _physicsCharacter;
+        public PlayerCamera PlayerCamera { get; private set; }
 
         [SerializeField] public float MouseXSensitivity;
         [SerializeField] public float MouseYSensitivity;
@@ -39,7 +39,7 @@ namespace CoreCraft.Character
             if (!IsServer) return;
 
             // if (_hasPlayer)
-            _playerCamera.transform.gameObject.transform.position = _networkPosition.Value;
+            PlayerCamera.transform.gameObject.transform.position = _networkPosition.Value;
 
             transform.position = _networkPosition.Value;
         }
@@ -49,7 +49,7 @@ namespace CoreCraft.Character
         {
             GameObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[cameraNetworkId].transform.gameObject;
 
-            _playerCamera = obj.GetComponent<PlayerCamera>();
+            PlayerCamera = obj.GetComponent<PlayerCamera>();
             SetCameraClientRpc(cameraNetworkId);
         }
 
@@ -58,7 +58,7 @@ namespace CoreCraft.Character
         {
             GameObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[cameraNetworkId].transform.gameObject;
 
-            _playerCamera = obj.GetComponent<PlayerCamera>();
+            PlayerCamera = obj.GetComponent<PlayerCamera>();
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -103,7 +103,7 @@ namespace CoreCraft.Character
                 input.x = input.x * MouseYSensitivity * Time.deltaTime;
 
                 _physicsCharacter.RequestRotation(input);
-                _playerCamera.RequestLookUpRotation(input);
+                PlayerCamera.RequestLookUpRotation(input);
             }
         }
 

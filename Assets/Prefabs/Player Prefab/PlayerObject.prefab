@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2297132449024143684}
   - component: {fileID: 2297132449024143681}
   - component: {fileID: 636382602080803757}
+  - component: {fileID: 2502314172191603005}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Untagged
@@ -47,8 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0677974eb4e6e4644ba84ba198ca4f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _physicsCharacter: {fileID: 0}
-  _playerCamera: {fileID: 0}
   MouseXSensitivity: 1
   MouseYSensitivity: 1
   RunToggle: 0
@@ -92,7 +91,19 @@ MonoBehaviour:
     m_ActionId: 82ad53d2-1a7b-485e-81d7-daac712438bd
     m_ActionName: MenuMap/Escape[/Keyboard/escape]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2502314172191603005}
+        m_TargetAssemblyTypeName: CoreCraft.Character.ItemPickUp, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 65e830db-edee-48dd-9a1f-e831bb3a069d
     m_ActionName: PlayerMap/Interact[/Mouse/leftButton]
   - m_PersistentCalls:
@@ -214,3 +225,24 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &2502314172191603005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2297132449024143685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77cf3e76444cfee449f461e297eb0734, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _toolInventoryPrefab: {fileID: 11400000, guid: 8b7b856a4d8f61342a9041363c4342f2,
+    type: 2}
+  _partInventoryPrefab: {fileID: 11400000, guid: 59b61cad045397a49a1c11891dfab2bb,
+    type: 2}
+  _itemRange: 5
+  ToolInventory: {fileID: 11400000, guid: 8b7b856a4d8f61342a9041363c4342f2, type: 2}
+  PartsInventory: {fileID: 11400000, guid: 59b61cad045397a49a1c11891dfab2bb, type: 2}
+  MaxOxygen: 100
+  CurrentOxygen: 100

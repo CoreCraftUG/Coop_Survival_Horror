@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InventoryType: 0
   _slotCount: 5
-  ItemList: []
+  ItemServerList: []
+  ItemClientList: []

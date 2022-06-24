@@ -21,6 +21,7 @@ namespace CoreCraft.Character
             if (!IsOwner)
             {
                 gameObject.GetComponentInChildren<Camera>().enabled = false;
+                gameObject.GetComponentInChildren<AudioListener>().enabled = false;
             }
         }
 
