@@ -53,6 +53,11 @@ namespace CoreCraft.Networking
             }
         }
 
+        public ulong GetClientIdBySteamFriend(Friend friend)
+        {
+            return _lobbyPlayersClient.Single(state => state.SteamId == friend.Id).ClientId;
+        }
+
         private void Start()
         {
             DontDestroyOnLoad(this);
@@ -68,7 +73,7 @@ namespace CoreCraft.Networking
             GameStarted.Value = started;
         }
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         public void ReadyUpServerRpc(ulong clientId, bool ready)
         {
             NetworkingLobbyPlayerState playerState = _lobbyPlayersServer.Single(state => state.ClientId == clientId);
@@ -125,6 +130,9 @@ namespace CoreCraft.Networking
                     ));
 
                 SyncLobbyListServerRpc();
+
+                NetworkingLobbyPlayerState state = _lobbyPlayersServer.Single(s => s.ClientId == playerData.Value.ClientId);
+                LobbyManager.Instance.CreateLobbyCard(new Friend(state.SteamId), state.ClientId);
             }
         }
 
@@ -159,6 +167,28 @@ namespace CoreCraft.Networking
                     ));
 
                 SyncLobbyListServerRpc();
+
+
+
+                if (!GameStarted.Value)
+                {
+                    NetworkingLobbyPlayerState state = _lobbyPlayersServer.Single(s => s.ClientId == clientId);
+                    LobbyManager.Instance.CreateLobbyCard(new Friend(state.SteamId),state.ClientId);
+                }
+
+                CreateLobbyCardsClientRpc();
+            }
+        }
+
+        [ClientRpc]
+        private void CreateLobbyCardsClientRpc()
+        {
+            if (!IsHost)
+            {
+                foreach (NetworkingLobbyPlayerState state in _lobbyPlayersClient)
+                {
+                    LobbyManager.Instance.CreateLobbyCard(new Friend(state.SteamId), state.ClientId);
+                }
             }
         }
 

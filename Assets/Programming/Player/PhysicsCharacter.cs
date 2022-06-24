@@ -102,7 +102,8 @@ namespace CoreCraft.Character
         
         private void LateUpdate()
         {
-            if (!IsServer) return;
+            if (!IsServer)
+                return;
 
             _currentSpeed = CharacterState.Value switch
             {
@@ -237,14 +238,14 @@ namespace CoreCraft.Character
             RotateRequestServerRpc(rotationInput);
         }
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         private void MoveRequestServerRpc(Vector3 direction)
         {
             _networkDirection.Value = direction;
             WalkingEvent.Invoke(direction);
         }
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         private void RotateRequestServerRpc(Vector2 rotation)
         {
             _movementRequested.Value = true;
@@ -252,7 +253,7 @@ namespace CoreCraft.Character
             _networkYRotation.Value += rotation.x;
         }
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         private void StateChangeRequestServerRpc(ECharacterState state)
         {
             CharacterState.Value = state;

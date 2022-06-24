@@ -17,11 +17,9 @@ namespace CoreCraft
         [SerializeField] private GameObject _lobbyPanel;
         [SerializeField] private GameObject _mainButtonPanel;
 
-        [Space, Header("Lobby Invite")]
-        [SerializeField] private GameObject _joinLobbyButton;
-
         [Space, Header("Buttons")]
         [SerializeField] private Button _createLobbyButton;
+        [SerializeField] private Button _joinLobbyButton;
 
         void Start()
         {
@@ -33,6 +31,11 @@ namespace CoreCraft
             _createLobbyButton.onClick.AddListener((() =>
             {
                 Networking_Game_Net_Portal.Instance.StartHost();
+            }));
+
+            _joinLobbyButton.onClick.AddListener((() =>
+            {
+                SteamLobbyManager.Instance.JoinLobbyButton();
             }));
         }
 
@@ -49,20 +52,22 @@ namespace CoreCraft
 
         private void LobbyJoin()
         {
+            _lobbyCanvas.SetActive(true);
+            _mainCanvas.SetActive(false);
             _lobbyPanel.SetActive(true);
             _mainButtonPanel.SetActive(false);
         }
 
-        private void LobbyInvite()
+        private void LobbyLeave()
         {
             _lobbyCanvas.SetActive(false);
             _mainButtonPanel.SetActive(true);
             _mainCanvas.SetActive(true);
         }
 
-        private void LobbyLeave()
+        private void LobbyInvite()
         {
-            _joinLobbyButton.SetActive(true);
+            _joinLobbyButton.transform.gameObject.SetActive(true);
         }
     }
 }

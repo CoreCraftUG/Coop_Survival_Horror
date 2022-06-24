@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using CoreCraft.Networking;
 using CoreCraft.Networking.Steam;
 using Steamworks;
 using TMPro;
@@ -46,9 +48,13 @@ namespace CoreCraft
         
         }
 
-        public void CreateLobbyCard(Friend friend)
+        public void CreateLobbyCard(Friend friend, ulong clientId)
         {
+            if (_inLobby.ContainsKey(friend.Id))
+                return;
+
             GameObject obj = Instantiate(_inLobbyFriend, _inLobbyContent);
+            obj.GetComponent<PlayerInfo>().SetUpPanel(clientId);
             obj.GetComponentInChildren<TMP_Text>().text = friend.Name;
             SteamFriendsManager.Instance.AssignProfilePicture(obj, friend.Id);
             _inLobby.Add(friend.Id, obj);

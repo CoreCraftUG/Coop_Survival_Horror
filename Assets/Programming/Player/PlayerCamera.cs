@@ -8,22 +8,28 @@ namespace CoreCraft.Character
     public class PlayerCamera : NetworkBehaviour
     {
         [SerializeField] private bool _lookConstrained = true;
+        [SerializeField] private GameObject _cameraObject;
 
 
         private NetworkVariable<float> _xRotation = new NetworkVariable<float>();
         private NetworkVariable<float> _yRotation = new NetworkVariable<float>();
+
         void Start()
         {
             _yRotation.Value = transform.rotation.y;
             _xRotation.Value = transform.rotation.x;
+            if (!IsOwner)
+            {
+                gameObject.GetComponentInChildren<Camera>().enabled = false;
+            }
         }
 
         void Update()
         {
-            if (IsServer)
-            {
-                transform.rotation = Quaternion.Euler(_xRotation.Value, _yRotation.Value,0.0f);
-            }
+            if (!IsServer)
+                return;
+            
+            transform.rotation = Quaternion.Euler(_xRotation.Value, _yRotation.Value,0.0f);
         }
 
         public void RequestLookUpRotation(Vector2 rotationInput)
@@ -31,7 +37,7 @@ namespace CoreCraft.Character
             RotateRequestServerRpc(rotationInput);
         }
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         private void RotateRequestServerRpc(Vector2 rotation)
         {
             _yRotation.Value += rotation.x;

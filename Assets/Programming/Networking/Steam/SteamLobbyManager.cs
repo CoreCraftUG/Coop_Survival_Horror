@@ -97,7 +97,7 @@ namespace CoreCraft.Networking.Steam
             OnLobbyInvite.Invoke();
         }
 
-        public async void JoinLobbyButton()
+        public void JoinLobbyButton()
         {
             OnGameLobbyJoinRequest(_invitationLobby, SteamClient.SteamId);
         }
@@ -111,8 +111,17 @@ namespace CoreCraft.Networking.Steam
         {
             Logger.Instance.Log($"{friend.Name} joint the Game",ELogType.Debug);
 
-            if (!GameManager.Instance.GameStarted.Value)
-                LobbyManager.Instance.CreateLobbyCard(friend);
+            // if (!GameManager.Instance.GameStarted.Value)
+            //     StartCoroutine(CreateLobbyCard(friend));
+        }
+
+        private IEnumerator CreateLobbyCard(Friend friend)
+        {
+            yield return null;
+            yield return null;
+            yield return null;
+
+            LobbyManager.Instance.CreateLobbyCard(friend, GameManager.Instance.GetClientIdBySteamFriend(friend));
         }
 
         private void OnLobbyMemberDisconnected(Lobby lobby, Friend friend)
@@ -165,17 +174,17 @@ namespace CoreCraft.Networking.Steam
         private void OnLobbyEnter(Lobby lobby)
         {
             Logger.Instance.Log($"Joint lobby as Client", ELogType.Debug);
-
-
-            LobbyManager.Instance.CreateLobbyCard(new Friend(SteamClient.SteamId));
+            /*
+            Friend f = new Friend(SteamClient.SteamId);
+            StartCoroutine(CreateLobbyCard(f));
 
             foreach (Friend friend in CurrentLobby?.Members)
             {
                 if (friend.Id == SteamClient.SteamId)
                     continue;
 
-                LobbyManager.Instance.CreateLobbyCard(friend);
-            }
+                StartCoroutine(CreateLobbyCard(friend));
+            }*/
 
             InLobby = true;
             OnLobbyJoin.Invoke();
@@ -224,7 +233,7 @@ namespace CoreCraft.Networking.Steam
                 CurrentLobby?.SetPublic();
 
                 CurrentLobby?.SetJoinable(true);
-                
+
                 return true;
             }
             catch (Exception e)

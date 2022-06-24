@@ -46,15 +46,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RunInBackground: 1
-  LogLevel: 0
+  LogLevel: 2
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 4483313063712711996}
-    PlayerPrefab: {fileID: 7403630570309503046, guid: dc99673d208da3d498458463ef689155,
+    PlayerPrefab: {fileID: 2297132449024143685, guid: a38b5e5f30b81224c8418d927ecc38f8,
       type: 3}
     NetworkPrefabs:
     - Override: 0
-      Prefab: {fileID: 7403630570309503046, guid: dc99673d208da3d498458463ef689155,
+      Prefab: {fileID: 2297132449024143685, guid: a38b5e5f30b81224c8418d927ecc38f8,
+        type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 5764392150068595200, guid: f651f9d49b4e6064b8ccebd3b9b6cb30,
+        type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 4639012286671059001, guid: be28653719c202b4a9672b06e0aa7978,
         type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0

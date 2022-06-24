@@ -111,7 +111,7 @@ namespace CoreCraft.Networking.Steam
                 else
                 {
                     _invite = true;
-                    bool result = NM.Singleton.StartHost();
+                    bool result = Networking_Game_Net_Portal.Instance.StartHost();
                     if (!result)
                     {
                         Logger.Instance.Log($"Server creation failed", ELogType.Error);

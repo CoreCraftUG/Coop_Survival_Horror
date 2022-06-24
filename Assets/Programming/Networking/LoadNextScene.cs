@@ -17,6 +17,8 @@ namespace CoreCraft
         private IEnumerator LoadScene()
         {
             yield return null;
+            yield return null;
+
             SceneManager.LoadScene(_nextSceneName);
         }
     }

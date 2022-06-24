@@ -23,6 +23,12 @@ namespace CoreCraft.Networking
 
         void Start()
         {
+
+        }
+
+        public void SetUpPanel(ulong clientId)
+        {
+            ClientId = clientId;
             if (ClientId == NM.Singleton.LocalClientId)
             {
                 _readyButton.gameObject.SetActive(true);
@@ -41,7 +47,7 @@ namespace CoreCraft.Networking
 
         private void StartGame()
         {
-            if (NM.Singleton.IsHost)
+            if (NM.Singleton.IsHost && ClientId == NM.Singleton.LocalClientId)
             {
                 GameManager.Instance.OnStartGame();
             }

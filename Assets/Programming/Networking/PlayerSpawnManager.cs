@@ -15,6 +15,8 @@ namespace CoreCraft.Networking
         [SerializeField] private GameObject _physicsCharacter;
         [SerializeField] private GameObject _playerCamera;
 
+        private Dictionary<ulong, GameObject> _playerCharacters = new Dictionary<ulong, GameObject>();
+
         private void Awake()
         {
             if (Instance == null)
@@ -31,7 +33,17 @@ namespace CoreCraft.Networking
             }
         }
 
-        [ServerRpc]
+        public GameObject GetPlayerCharacterByClientId(ulong clientId)
+        {
+            if (_playerCharacters.ContainsKey(clientId))
+            {
+                return _playerCharacters[clientId];
+            }
+
+            return null;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
         public void SpawnPlayerCharacterServerRpc(ulong clientId, Vector3 position, Quaternion rotation)
         {
             GameObject player = Instantiate(_playerObject, position, rotation);
@@ -49,6 +61,8 @@ namespace CoreCraft.Networking
             player.SetActive(true);
             nObj.SpawnAsPlayerObject(clientId, true);
 
+            _playerCharacters.Add(clientId, player);
+
             PlayerController controller = player.GetComponent<PlayerController>();
 
             GameObject cameraObj = Instantiate(_playerCamera, position, rotation);
@@ -62,9 +76,9 @@ namespace CoreCraft.Networking
                 return;
             }
             cameraObj.SetActive(true);
-            nCameraObj.SpawnAsPlayerObject(clientId, true);
+            nCameraObj.SpawnWithOwnership(clientId, true);
 
-            controller.SetCamera(cameraObj.GetComponent<PlayerCamera>());
+            controller.SetCameraServerRpc(nCameraObj.NetworkObjectId);
 
             GameObject physicsObj = Instantiate(_physicsCharacter, position, rotation);
             NetworkObject nPhysicsObj = physicsObj.GetComponent<NetworkObject>();
@@ -77,9 +91,9 @@ namespace CoreCraft.Networking
                 return;
             }
             physicsObj.SetActive(true);
-            nPhysicsObj.SpawnAsPlayerObject(clientId, true);
+            nPhysicsObj.SpawnWithOwnership(clientId, true);
 
-            controller.SetPhysicsCharacter(physicsObj.GetComponent<PhysicsCharacter>());
+            controller.SetPhysicsCharacterServerRpc(nPhysicsObj.NetworkObjectId);
         }
     }
 }

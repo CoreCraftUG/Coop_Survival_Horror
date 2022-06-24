@@ -19,7 +19,7 @@ using NM = Unity.Netcode.NetworkManager;
 
 public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Portal>
 {
-    private int maxPlayers;
+    private int maxPlayers = 4;
 
     [Space, Header("Scenes")]
     [SerializeField] private string _menuScene;
@@ -109,6 +109,12 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
     {
         gameInProgress = true;
         GameManager.Instance.GameStartedServerRpc(true);
+        LoadSceneClientRpc();
+    }
+
+    [ClientRpc]
+    private void LoadSceneClientRpc()
+    {
         NM.Singleton.SceneManager.LoadScene(_gameScene, LoadSceneMode.Single);
     }
 
