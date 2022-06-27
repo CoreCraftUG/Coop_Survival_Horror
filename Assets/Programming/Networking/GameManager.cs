@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CoreCraft.Character;
 using CoreCraft.Networking.Steam;
 using Steamworks;
 using Steamworks.Data;
@@ -65,6 +66,36 @@ namespace CoreCraft.Networking
             NM.Singleton.OnClientConnectedCallback += HandleClientConnected;
             NM.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
             SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
+
+            EventManager.Instance.PlayerSpawned.AddListener(OnPlayerSpawnedServerRpc);
+        }
+
+        [ServerRpc]
+        private void OnPlayerSpawnedServerRpc(ulong playerId, ulong clientId)
+        {
+            if (_lobbyPlayersServer.Any(p => p.ClientId == clientId))
+            {
+                _lobbyPlayersServer.Single(p => p.ClientId == clientId).SetPlayerController(playerId);
+                SyncLobbyListServerRpc();
+            }
+            else
+            {
+                Debug.LogError($"Client {clientId} not in lobby");
+            }
+        }
+
+        public List<NetworkingLobbyPlayerState> GetPlayerInfos()
+        {
+            if (IsServer)
+            {
+                List<NetworkingLobbyPlayerState> returnList = _lobbyPlayersServer;
+                return returnList;
+            }
+            else
+            {
+                List<NetworkingLobbyPlayerState> returnList = _lobbyPlayersClient;
+                return returnList;
+            }
         }
 
         [ServerRpc]

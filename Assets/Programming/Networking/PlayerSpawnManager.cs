@@ -94,6 +94,8 @@ namespace CoreCraft.Networking
             nPhysicsObj.SpawnWithOwnership(clientId, true);
 
             controller.SetPhysicsCharacterServerRpc(nPhysicsObj.NetworkObjectId);
+
+            EventManager.Instance.PlayerSpawned.Invoke(nObj.NetworkObjectId, clientId);
         }
     }
 }

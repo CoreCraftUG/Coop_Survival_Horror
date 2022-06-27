@@ -10,13 +10,15 @@ namespace CoreCraft.Character
 {
     public class PlayerController : NetworkBehaviour
     {
-        private PhysicsCharacter _physicsCharacter;
+        public PhysicsCharacter PhysicsCharacter { get; private set; }
         public PlayerCamera PlayerCamera { get; private set; }
 
         [SerializeField] public float MouseXSensitivity;
         [SerializeField] public float MouseYSensitivity;
         [SerializeField] public bool RunToggle;
         [SerializeField] public bool CrouchToggle;
+
+        public bool IsAlive = true;
 
         private PlayerInput _playerInput;
         private NetworkObject _networkObject;
@@ -34,7 +36,7 @@ namespace CoreCraft.Character
 
         private void Update()
         {
-            SetPositionServerRpc(_physicsCharacter.PlayerObjectAttachmentTransform.position);
+            SetPositionServerRpc(PhysicsCharacter.PlayerObjectAttachmentTransform.position);
 
             if (!IsServer) return;
 
@@ -67,7 +69,7 @@ namespace CoreCraft.Character
             GameObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[characterNetworkId]
                 .transform.gameObject;
 
-            _physicsCharacter = obj.GetComponent<PhysicsCharacter>();
+            PhysicsCharacter = obj.GetComponent<PhysicsCharacter>();
             SetPhysicsCharacterClientRpc(characterNetworkId);
         }
 
@@ -77,7 +79,7 @@ namespace CoreCraft.Character
             GameObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[characterNetworkId]
                 .transform.gameObject;
 
-            _physicsCharacter = obj.GetComponent<PhysicsCharacter>();
+            PhysicsCharacter = obj.GetComponent<PhysicsCharacter>();
         }
 
         public void SetHasPlayer(bool state) => _hasPlayer = state;
@@ -89,7 +91,7 @@ namespace CoreCraft.Character
                 Vector2 input = callback.ReadValue<Vector2>();
                 Vector3 vector3Input = new Vector3(input.x, 0, input.y);
 
-                _physicsCharacter.RequestMove(vector3Input);
+                PhysicsCharacter.RequestMove(vector3Input);
             }
         }
 
@@ -102,7 +104,7 @@ namespace CoreCraft.Character
                 input.y = input.y * MouseXSensitivity * Time.deltaTime;
                 input.x = input.x * MouseYSensitivity * Time.deltaTime;
 
-                _physicsCharacter.RequestRotation(input);
+                PhysicsCharacter.RequestRotation(input);
                 PlayerCamera.RequestLookUpRotation(input);
             }
         }
@@ -114,13 +116,13 @@ namespace CoreCraft.Character
                 switch (CrouchToggle)
                 {
                     case true when callback.phase == InputActionPhase.Started:
-                        switch (_physicsCharacter.CharacterState.Value)
+                        switch (PhysicsCharacter.CharacterState.Value)
                         {
                             case ECharacterState.Crouch:
-                                _physicsCharacter.RequestStateChange(ECharacterState.Walk);
+                                PhysicsCharacter.RequestStateChange(ECharacterState.Walk);
                                 break;
                             default:
-                                _physicsCharacter.RequestStateChange(ECharacterState.Crouch);
+                                PhysicsCharacter.RequestStateChange(ECharacterState.Crouch);
                                 break;
                         }
 
@@ -129,10 +131,10 @@ namespace CoreCraft.Character
                         switch (callback.phase)
                         {
                             case InputActionPhase.Started:
-                                _physicsCharacter.RequestStateChange(ECharacterState.Crouch);
+                                PhysicsCharacter.RequestStateChange(ECharacterState.Crouch);
                                 break;
                             case InputActionPhase.Canceled:
-                                _physicsCharacter.RequestStateChange(ECharacterState.Walk);
+                                PhysicsCharacter.RequestStateChange(ECharacterState.Walk);
                                 break;
                         }
 
@@ -148,13 +150,13 @@ namespace CoreCraft.Character
                 switch (RunToggle)
                 {
                     case true when callback.phase == InputActionPhase.Started:
-                        switch (_physicsCharacter.CharacterState.Value)
+                        switch (PhysicsCharacter.CharacterState.Value)
                         {
                             case ECharacterState.Run:
-                                _physicsCharacter.RequestStateChange(ECharacterState.Walk);
+                                PhysicsCharacter.RequestStateChange(ECharacterState.Walk);
                                 break;
                             default:
-                                _physicsCharacter.RequestStateChange(ECharacterState.Run);
+                                PhysicsCharacter.RequestStateChange(ECharacterState.Run);
                                 break;
                         }
 
@@ -163,10 +165,10 @@ namespace CoreCraft.Character
                         switch (callback.phase)
                         {
                             case InputActionPhase.Started:
-                                _physicsCharacter.RequestStateChange(ECharacterState.Run);
+                                PhysicsCharacter.RequestStateChange(ECharacterState.Run);
                                 break;
                             case InputActionPhase.Canceled:
-                                _physicsCharacter.RequestStateChange(ECharacterState.Walk);
+                                PhysicsCharacter.RequestStateChange(ECharacterState.Walk);
                                 break;
                         }
 
