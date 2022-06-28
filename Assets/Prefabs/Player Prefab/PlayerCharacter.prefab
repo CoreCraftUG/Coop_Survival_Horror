@@ -114,9 +114,9 @@ MonoBehaviour:
   _orientationTransform: {fileID: 5764392149860495714}
   _playerObjectAttachmentTransform: {fileID: 5764392151170191561}
   _characterCollider: {fileID: 5764392150823800293}
-  _walkSpeed: 50
-  _crouchSpeed: 30
-  _runSpeed: 80
+  _walkSpeed: 15
+  _crouchSpeed: 10
+  _runSpeed: 20
   _airControl: 0.1
   _crouchHeight: 1
   _standardWalkHeight: 2
@@ -124,7 +124,7 @@ MonoBehaviour:
   _groundDrag: 5
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 193
   _stepOffset: 0.3
   _playerRadius: 0.5
   _gravityMultiplier: 12

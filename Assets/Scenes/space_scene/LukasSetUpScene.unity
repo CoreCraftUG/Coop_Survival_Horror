@@ -855,7 +855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bccaf67fb65cf3d4992141f8362d631b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneName: Game_Scene
+  _sceneName: space_scene
 --- !u!4 &2024566659
 Transform:
   m_ObjectHideFlags: 0

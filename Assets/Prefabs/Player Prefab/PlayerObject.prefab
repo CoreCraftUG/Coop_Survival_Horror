@@ -48,10 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0677974eb4e6e4644ba84ba198ca4f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MouseXSensitivity: 1
-  MouseYSensitivity: 1
+  MouseXSensitivity: 10
+  MouseYSensitivity: 10
   RunToggle: 0
   CrouchToggle: 0
+  IsAlive: 1
 --- !u!114 &2297132449024143684
 MonoBehaviour:
   m_ObjectHideFlags: 0
