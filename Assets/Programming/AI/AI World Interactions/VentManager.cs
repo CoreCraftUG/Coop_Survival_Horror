@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using BehaviorDesigner.Runtime.ObjectDrawers;
+using CoreCraft.Core;
 using Sirenix.OdinInspector;
 using SplineMesh;
 using UnityEditor;
@@ -17,39 +18,40 @@ namespace CoreCraft.Enemy
     {
         #region Odin Only
 
-        [TabGroup("Level Design Tool"),
+        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
          SerializeField,
          InlineButton("ResetVentCount")]
         private string _ventName;
 
         [Space,
-         TabGroup("Level Design Tool"),
+         TabGroup("ParentGroup", "Level Design Tool",false, 0),
          ShowInInspector,
          ValueDropdown("_ventObjectList"),
          InlineButton("SelectVentObject", "Select Vent Object"),
          InlineButton("DestroySelectedVentObject", "X")]
         private GameObject _previewVent1;
 
-        [TabGroup("Level Design Tool"),
+        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
          ShowInInspector,
          ValueDropdown("_ventObjectList"),
          InlineButton("SelectVentObject", "Select Vent Object"),
          InlineButton("DestroySelectedVentObject", "X")]
         private GameObject _previewVent2;
 
-        [TabGroup("Level Design Tool"),
+        [Space,
+         TabGroup("ParentGroup", "Level Design Tool",false, 0),
          ShowInInspector,
-        SerializeField,
+         SerializeField,
          MinValue(1),
          MaxValue(3)]
         private int _pathDirectionX;
-        [TabGroup("Level Design Tool"),
+        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
          ShowInInspector,
          SerializeField,
          MinValue(1),
          MaxValue(3)]
         private int _pathDirectionY;
-        [TabGroup("Level Design Tool"),
+        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
          ShowInInspector,
          SerializeField,
          MinValue(1),
@@ -57,12 +59,21 @@ namespace CoreCraft.Enemy
         private int _pathDirectionZ;
 
         [Space,
-         TabGroup("Level Design Tool"),
+         TabGroup("ParentGroup", "Level Design Tool",false, 0),
+         SerializeField]
+        private bool _automaticMirrorPath;
+
+        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
+         SerializeField]
+        private bool _automaticDebugPath;
+
+        [Space,
+         TabGroup("ParentGroup", "Level Design Tool",false, 0),
          SerializeField,
          Range(0.0f,15.0f)]
         private float _spawnDistance;
 
-        [TabGroup("Level Design Tool"),
+        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
          SerializeField,
          Range(0.0f, 7.0f)]
         private float _spawnHeight;
@@ -73,29 +84,33 @@ namespace CoreCraft.Enemy
         [SerializeField, HideInInspector]
         private int _ventCount = 0;
 
+        private bool _previewVentBool => _previewVent1 != null && _previewVent2 != null && _previewVent1 != _previewVent2;
+
         #endregion
 
         #region Debug
 
-        [TabGroup("Debug"),
+        [TabGroup("ParentGroup", "Debug",false, 1),
          ShowInInspector,
          ValueDropdown("_ventObjectList"),
          InlineButton("SelectVentObject", "Select Vent Object"),
          InlineButton("DestroySelectedVentObject", "X")]
         private GameObject _debugVent1;
 
-        [TabGroup("Debug"),
+        [TabGroup("ParentGroup", "Debug",false, 1),
          ShowInInspector,
          ValueDropdown("_ventObjectList"),
          InlineButton("SelectVentObject", "Select Vent Object"),
          InlineButton("DestroySelectedVentObject", "X")]
         private GameObject _debugVent2;
 
-        [TabGroup("Debug"),
+        [Space,
+         TabGroup("ParentGroup", "Debug",false, 1),
          SerializeField]
         private float _soundTravelSpeed;
 
-        [TabGroup("Debug"),
+        [Space,
+         TabGroup("ParentGroup", "Debug",false, 1),
          ShowInInspector,
          ValueDropdown("_ventCrawlingSFXList")]
         private AudioClip _debugVentAudioClip;
@@ -104,24 +119,27 @@ namespace CoreCraft.Enemy
          HideInInspector]
         private GameObject _ventPathObject;
 
+        private bool _playMode => UnityEditor.EditorApplication.isPlaying;
+        private bool _debugVentBool => _debugVent1 != null && _debugVent2 != null && _debugVent1 != _debugVent2;
+
         #endregion
 
-        [TabGroup("Prefab Data"),
+        [TabGroup("ParentGroup", "Prefab Data", false, 2),
          SerializeField,
          AssetsOnly]
         private GameObject _ventPrefabObject;
 
-        [TabGroup("Prefab Data"),
+        [TabGroup("ParentGroup", "Prefab Data", false, 2),
          SerializeField,
          AssetsOnly]
         private GameObject _ventSoundPrefabObject;
 
-        [TabGroup("Prefab Data"),
+        [TabGroup("ParentGroup", "Prefab Data",false,2),
          SerializeField,
          AssetsOnly]
         private GameObject _ventPathPrefabObject;
 
-        [TabGroup("Prefab Data"),
+        [TabGroup("ParentGroup", "Prefab Data", false, 2),
          SerializeField,
          AssetsOnly,
          InlineEditor(InlineEditorModes.SmallPreview)]
@@ -133,8 +151,7 @@ namespace CoreCraft.Enemy
 
         void Start()
         {
-            DebugVentList();
-            // CleanUpVentDictionary();
+            CleanUpVentDictionary();
         }
 
         void Update()
@@ -164,8 +181,86 @@ namespace CoreCraft.Enemy
         }
 
         #region Odin
-        
-        [TabGroup("Debug"),
+
+        #region Debug
+
+        [EnableIf("_debugVentBool"),
+         BoxGroup("ParentGroup/Debug/InnerGroup", false),
+         Button("Debug Move Path", ButtonSizes.Medium)]
+        private void DebugMoveObjectPath()
+        {
+            if (_ventDictionary == null || _debugVent1 == null || _debugVent2 == null)
+            {
+                Debug.Log($"Vent Dictionary: {_ventDictionary} Debug Vent 1: {_debugVent1} Debug Vent 2: {_debugVent2}");
+                return;
+            }
+
+            Vector2Int Ids = GetDebugVentId1And2();
+            if (Ids == Vector2Int.zero)
+                return;
+
+            int ventId1 = Ids.x;
+            int ventId2 = Ids.y;
+
+            if (_ventPathObject != null)
+                DestroyImmediate(_ventPathObject);
+
+            _ventPathObject = Instantiate(_ventPathPrefabObject, _debugVent1.transform.position, Quaternion.identity);
+
+            int[] directionValues = GetDirectionValues(ventId1, ventId2);
+
+            Dictionary<int, Vector3> positions = GetDirectionDictionary(directionValues);
+
+            LineRenderer line = _ventPathObject.GetComponent<LineRenderer>();
+
+            line.positionCount = 4;
+
+            Vector3[] linePath = { _debugVent1.transform.position - _ventPathObject.transform.position,
+                positions[directionValues[0]],
+                positions[directionValues[1]],
+                positions[directionValues[2]]};
+
+
+            line.SetPositions(linePath);
+            Debug.Log($"X: {directionValues[0]} Y: {directionValues[1]} Z: {directionValues[2]}");
+        }
+
+        [EnableIf("@this._ventPathObject != null"),
+         BoxGroup("ParentGroup/Debug/InnerGroup", false),
+         Button("Destroy Path", ButtonSizes.Medium)]
+        private void DestroyPathObject()
+        {
+            if (_ventPathObject != null)
+                DestroyImmediate(_ventPathObject);
+        }
+
+        [BoxGroup("ParentGroup/Debug/InnerGroup", false),
+         Button("Debug Vent List", ButtonSizes.Medium)]
+        private void DebugVentList()
+        {
+            Debug.Log($"Debug Started");
+            if (_ventDictionary != null)
+            {
+                Debug.Log($"Dictionary length: {_ventDictionary.Count}");
+                int i = 0;
+                foreach (KeyValuePair<int, VentStruct> pair in _ventDictionary)
+                {
+                    Debug.Log($"Vent Dictionary position {i}: Key: {pair.Key} Value Object: {pair.Value.VentObject}");
+                }
+            }
+
+            if (_ventObjectList != null)
+            {
+                Debug.Log($"Debug Dictionary finished \n VentObjectList length: {_ventObjectList.Count}");
+                foreach (GameObject o in _ventObjectList)
+                {
+                    Debug.Log($"{o.name}");
+                }
+            }
+        }
+
+        [EnableIf("@this._debugVentBool && this._playMode"),
+         BoxGroup("ParentGroup/Debug/Play Mode Debug", true),
          Button("Debug Object Move", ButtonSizes.Medium)]
         private void DebugMoveObject()
         {
@@ -175,7 +270,7 @@ namespace CoreCraft.Enemy
                 return;
             }
 
-            GameObject obj = Instantiate(_ventSoundPrefabObject, _debugVent1.transform.position ,Quaternion.identity);
+            GameObject obj = Instantiate(_ventSoundPrefabObject, _debugVent1.transform.position, Quaternion.identity);
             AudioSource source = obj.GetComponent<AudioSource>();
             source.clip = _debugVentAudioClip;
             source.Play();
@@ -270,11 +365,170 @@ namespace CoreCraft.Enemy
                 {
                     obj.transform.DOMove(obj.transform.position + positions[directionValues[2]], durations[2]).OnComplete((() =>
                     {
-                        Destroy(obj,2);
+                        Destroy(obj, 2);
                     }));
                 });
             }));
         }
+
+        #endregion
+
+        #region CLEAR
+
+        [TabGroup("ParentGroup", "Clear Manager", false, 3),
+         Button("CLEAR VENT MANAGER", ButtonSizes.Large),
+         GUIColor(1, 0, 0)]
+        private void ClearAll()
+        {
+            for (int i = _ventObjectList.Count - 1; i >= 0; i--)
+            {
+                if (_ventObjectList[i] != null)
+                    DestroyImmediate(_ventObjectList[i]);
+            }
+            ClearVentObjectList();
+            CleanUpVentDictionary();
+            ResetVentCount();
+            if (_ventPathObject != null)
+                DestroyImmediate(_ventPathObject);
+        }
+
+        #endregion
+
+        #region Level Design
+
+        [BoxGroup("ParentGroup/Level Design Tool/InnerGroup", false),
+         Button("Spawn vent object", ButtonSizes.Medium)]
+        private void SpawnVentObjectInEditor()
+        {
+            VentStruct ventStruct = new VentStruct();
+            Transform sceneCameraTransform = UnityEditor.EditorWindow.GetWindow<SceneView>().camera.transform;
+            ventStruct.VentObject = Instantiate(_ventPrefabObject, sceneCameraTransform.position + sceneCameraTransform.forward * _spawnDistance + Vector3.up * _spawnHeight, Quaternion.identity, this.transform);
+
+            ventStruct.VentObject.name = $"{((_ventName.Length > 0) ? $"{_ventName}" : $"Vent: {_ventCount}")}";
+
+            while (_ventObjectList.Any(o => o.name == ventStruct.VentObject.name))
+                ventStruct.VentObject.name += $" {_ventCount}";
+
+            int id = 0;
+
+            while (_ventDictionary.ContainsKey(id))
+                id++;
+
+            ventStruct.VentID = id;
+            ventStruct.PathDictionary = new PathOrderDictionary();
+            _ventDictionary.Add(id, ventStruct);
+
+            foreach (KeyValuePair<int, VentStruct> pair1 in _ventDictionary)
+            {
+                foreach (KeyValuePair<int, VentStruct> pair2 in _ventDictionary)
+                {
+                    if (pair1.Key == pair2.Key || (pair1.Value.PathDictionary != null && pair1.Value.PathDictionary.ContainsKey(pair2.Key)))
+                        continue;
+
+                    PathOrder order = new PathOrder();
+                    order.PathOrderArray = new int[3];
+                    order.PathOrderArray[0] = 2;
+                    order.PathOrderArray[1] = 3;
+                    order.PathOrderArray[2] = 1;
+
+                    pair1.Value.PathDictionary.Add(pair2.Key, order);
+                }
+            }
+
+            _ventObjectList.Add(ventStruct.VentObject);
+            _ventCount++;
+        }
+
+        [EnableIf("_previewVentBool"),
+         BoxGroup("ParentGroup/Level Design Tool/InnerGroup", false),
+         Button("Change Path Order", ButtonSizes.Medium)]
+        private void ChangePathOrder()
+        {
+            if (_ventDictionary == null || _debugVent1 == null || _debugVent2 == null)
+            {
+                Debug.Log($"Vent Dictionary: {_ventDictionary} Debug Vent 1: {_debugVent1} Debug Vent 2: {_debugVent2}");
+                return;
+            }
+
+            Vector2Int Ids = GetPreviewVentId1And2();
+            if (Ids == Vector2Int.zero)
+                return;
+
+            int ventId1 = Ids.x;
+            int ventId2 = Ids.y;
+
+            if (_pathDirectionX == _pathDirectionY || _pathDirectionX == _pathDirectionZ || _pathDirectionY == _pathDirectionZ)
+            {
+                Debug.Log($"Can't set two directions on the same Index\nDirection X: {_pathDirectionX}; Direction Y: {_pathDirectionY}; Direction Z: {_pathDirectionZ}");
+                return;
+            }
+
+            _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[0] = _pathDirectionX;
+            _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[1] = _pathDirectionY;
+            _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[2] = _pathDirectionZ;
+
+            if (_automaticMirrorPath)
+                MirrorPath();
+            if (_automaticDebugPath)
+                DebugMoveObjectPath();
+        }
+
+
+        [EnableIf("_previewVentBool"),
+         BoxGroup("ParentGroup/Level Design Tool/InnerGroup", false),
+         Button("Mirror Path", ButtonSizes.Medium)]
+        private void MirrorPath()
+        {
+            Vector2Int Ids = GetPreviewVentId1And2();
+            if (Ids == Vector2Int.zero)
+                return;
+
+            int ventId1 = Ids.x;
+            int ventId2 = Ids.y;
+
+            int vent1Pos1 = 0;
+            int vent1Pos2 = 0;
+            int vent1Pos3 = 0;
+
+            for (int i = 0; i < _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray.Length; i++)
+            {
+                switch (_ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[i])
+                {
+                    case 1:
+                        vent1Pos1 = i;
+                        break;
+                    case 2:
+                        vent1Pos2 = i;
+                        break;
+                    default:
+                        vent1Pos3 = i;
+                        break;
+                }
+            }
+
+            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos1] =
+                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos3];
+            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos2] =
+                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos2];
+            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos3] =
+                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos1];
+        }
+
+        [BoxGroup("ParentGroup/Level Design Tool/InnerGroup", false),
+         Button("Cleaning up vent list", ButtonSizes.Medium),
+         Tooltip("Cleaning up list if vent was manually removed from the scene ")]
+        private void ClearVentObjectList()
+        {
+            for (int i = _ventObjectList.Count - 1; i >= 0; i--)
+            {
+                if (_ventObjectList[i] == null)
+                    _ventObjectList.RemoveAt(i);
+            }
+        }
+
+        #endregion
+
+        #region Helper
 
         private Vector2Int GetDebugVentId1And2()
         {
@@ -302,6 +556,7 @@ namespace CoreCraft.Enemy
 
             return new Vector2Int(ventId1, ventId2);
         }
+
         private Vector2Int GetPreviewVentId1And2()
         {
             int ventId1 = 0;
@@ -329,46 +584,6 @@ namespace CoreCraft.Enemy
             return new Vector2Int(ventId1, ventId2);
         }
 
-        [TabGroup("Debug"),
-         Button("Debug Move Path", ButtonSizes.Medium)]
-        private void DebugMoveObjectPath()
-        {
-            if (_ventDictionary == null || _debugVent1 == null || _debugVent2 == null)
-            {
-                Debug.Log($"Vent Dictionary: {_ventDictionary} Debug Vent 1: {_debugVent1} Debug Vent 2: {_debugVent2}");
-                return;
-            }
-
-            Vector2Int Ids = GetDebugVentId1And2();
-            if (Ids == Vector2Int.zero)
-                return;
-
-            int ventId1 = Ids.x;
-            int ventId2 = Ids.y;
-
-            if (_ventPathObject != null)
-                DestroyImmediate(_ventPathObject);
-
-            _ventPathObject = Instantiate(_ventPathPrefabObject, _debugVent1.transform.position, Quaternion.identity);
-
-            int[] directionValues = GetDirectionValues(ventId1, ventId2);
-
-            Dictionary<int, Vector3> positions = GetDirectionDictionary(directionValues);
-
-            LineRenderer line = _ventPathObject.GetComponent<LineRenderer>();
-
-            line.positionCount = 4;
-
-            Vector3[] linePath = { _debugVent1.transform.position - _ventPathObject.transform.position,
-                positions[directionValues[0]],
-                positions[directionValues[1]],
-                positions[directionValues[2]]};
-
-
-            line.SetPositions(linePath);
-            Debug.Log($"X: {directionValues[0]} Y: {directionValues[1]} Z: {directionValues[2]}");
-        }
-
         private Dictionary<int, Vector3> GetDirectionDictionary(int[] directionValues)
         {
             if (_ventDictionary == null || _debugVent1 == null || _debugVent2 == null)
@@ -380,7 +595,7 @@ namespace CoreCraft.Enemy
             Vector3 posX = Vector3.zero;
             Vector3 posY = Vector3.zero;
             Vector3 posZ = Vector3.zero;
-            
+
             Dictionary<int, Vector3> positions = new Dictionary<int, Vector3>();
 
             switch (directionValues[0])
@@ -454,7 +669,7 @@ namespace CoreCraft.Enemy
                     }
                     break;
             }
-            
+
             return positions;
         }
 
@@ -467,55 +682,6 @@ namespace CoreCraft.Enemy
             }
 
             return _ventDictionary[ventIdStart].PathDictionary[ventIdEnd].PathOrderArray;
-        }
-
-        [TabGroup("Debug"),
-         Button("Destroy Path", ButtonSizes.Medium)]
-        private void DestroyPathObject()
-        {
-            if (_ventPathObject != null)
-                DestroyImmediate(_ventPathObject);
-        }
-
-        [TabGroup("Debug"),
-         Button("Debug Vent List", ButtonSizes.Medium)]
-        private void DebugVentList()
-        {
-            Debug.Log($"Debug Started");
-            if (_ventDictionary != null)
-            {
-                Debug.Log($"Dictionary length: {_ventDictionary.Count}");
-                int i = 0;
-                foreach (KeyValuePair<int, VentStruct> pair in _ventDictionary)
-                {
-                    Debug.Log($"Vent Dictionary position {i}: Key: {pair.Key} Value Object: {pair.Value.VentObject}");
-                }
-            }
-
-            if (_ventObjectList != null)
-            {
-                Debug.Log($"Debug Dictionary finished \n VentObjectList length: {_ventObjectList.Count}");
-                foreach (GameObject o in _ventObjectList)
-                {
-                    Debug.Log($"{o.name}");
-                }
-            }
-        }
-
-        [TabGroup("Clear Manager"),
-        Button("CLEAR VENT MANAGER", ButtonSizes.Large)]
-        private void ClearAll()
-        {
-            for (int i = _ventObjectList.Count - 1; i >= 0; i--)
-            {
-                if (_ventObjectList[i] != null)
-                    DestroyImmediate(_ventObjectList[i]);
-            }
-            ClearVentObjectList();
-            CleanUpVentDictionary();
-            ResetVentCount();
-            if (_ventPathObject != null)
-                DestroyImmediate(_ventPathObject);
         }
 
         private void ResetVentCount()
@@ -535,129 +701,8 @@ namespace CoreCraft.Enemy
             if (selectVent != null)
                 UnityEditor.Selection.activeObject = selectVent;
         }
-        
-        [TabGroup("Level Design Tool"),
-         Button("Spawn vent object", ButtonSizes.Medium)]
-        private void SpawnVentObjectInEditor()
-        {
-            VentStruct ventStruct = new VentStruct();
-            Transform sceneCameraTransform = UnityEditor.EditorWindow.GetWindow<SceneView>().camera.transform;
-            ventStruct.VentObject = Instantiate(_ventPrefabObject, sceneCameraTransform.position + sceneCameraTransform.forward * _spawnDistance + Vector3.up * _spawnHeight, Quaternion.identity, this.transform);
 
-            ventStruct.VentObject.name = $"{((_ventName.Length > 0) ? $"{_ventName}" : $"Vent: {_ventCount}")}";
-
-            while (_ventObjectList.Any(o => o.name == ventStruct.VentObject.name))
-                ventStruct.VentObject.name += $" {_ventCount}";
-
-            int id = 0;
-
-            while (_ventDictionary.ContainsKey(id))
-                id++;
-
-            ventStruct.VentID = id;
-            ventStruct.PathDictionary = new PathOrderDictionary();
-            _ventDictionary.Add(id,ventStruct);
-
-            foreach (KeyValuePair<int, VentStruct> pair1 in _ventDictionary)
-            {
-                foreach (KeyValuePair<int, VentStruct> pair2 in _ventDictionary)
-                {
-                    if (pair1.Key == pair2.Key || (pair1.Value.PathDictionary != null && pair1.Value.PathDictionary.ContainsKey(pair2.Key)))
-                        continue;
-
-                    PathOrder order = new PathOrder();
-                    order.PathOrderArray = new int[3];
-                    order.PathOrderArray[0] = 2;
-                    order.PathOrderArray[1] = 3;
-                    order.PathOrderArray[2] = 1;
-
-                    pair1.Value.PathDictionary.Add(pair2.Key,order);
-                }
-            }
-            
-            _ventObjectList.Add(ventStruct.VentObject);
-            _ventCount++;
-        }
-
-        [TabGroup("Level Design Tool"),
-         Button("Change Path Order", ButtonSizes.Medium)]
-        private void ChangePathOrder()
-        {
-            if (_ventDictionary == null || _debugVent1 == null || _debugVent2 == null)
-            {
-                Debug.Log($"Vent Dictionary: {_ventDictionary} Debug Vent 1: {_debugVent1} Debug Vent 2: {_debugVent2}");
-                return;
-            }
-
-            Vector2Int Ids = GetPreviewVentId1And2();
-            if (Ids == Vector2Int.zero)
-                return;
-
-            int ventId1 = Ids.x;
-            int ventId2 = Ids.y;
-
-            if (_pathDirectionX  == _pathDirectionY || _pathDirectionX == _pathDirectionZ || _pathDirectionY == _pathDirectionZ)
-            {
-                Debug.Log($"Can't set two directions on the same Index\nDirection X: {_pathDirectionX}; Direction Y: {_pathDirectionY}; Direction Z: {_pathDirectionZ}");
-                return;
-            }
-
-            _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[0] = _pathDirectionX;
-            _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[1] = _pathDirectionY;
-            _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[2] = _pathDirectionZ;
-        }
-
-
-        [TabGroup("Level Design Tool"),
-         Button("Mirror Path", ButtonSizes.Medium)]
-        private void MirrorPath()
-        {
-            Vector2Int Ids = GetPreviewVentId1And2();
-            if (Ids == Vector2Int.zero)
-                return;
-
-            int ventId1 = Ids.x;
-            int ventId2 = Ids.y;
-
-            int vent1Pos1 = 0;
-            int vent1Pos2 = 0;
-            int vent1Pos3 = 0;
-
-            for (int i = 0; i < _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray.Length; i++)
-            {
-                switch (_ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[i])
-                {
-                    case 1:
-                        vent1Pos1 = i;
-                        break;
-                    case 2:
-                        vent1Pos2 = i;
-                        break;
-                    default:
-                        vent1Pos3 = i;
-                        break;
-                }
-            }
-
-            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos1] =
-                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos3];
-            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos2] =
-                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos2];
-            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos3] =
-                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos1];
-        }
-
-        [TabGroup("Level Design Tool"),
-         Button("Cleaning up vent list", ButtonSizes.Medium),
-         Tooltip("Cleaning up list if vent was manually removed from the scene ")]
-        private void ClearVentObjectList()
-        {
-            for (int i = _ventObjectList.Count - 1; i >= 0; i--)
-            {
-                if (_ventObjectList[i] == null)
-                    _ventObjectList.RemoveAt(i);
-            }
-        }
+        #endregion
 
         #endregion
     }
@@ -678,38 +723,4 @@ namespace CoreCraft.Enemy
 
     [Serializable] public class VentDictionary : SerializableDictionary<int, VentStruct> { }
     [Serializable] public class PathOrderDictionary : SerializableDictionary<int, PathOrder> { }
-
-    [Serializable]
-    public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
-    {
-        [SerializeField]
-        private List<TKey> keys = new List<TKey>();
-
-        [SerializeField]
-        private List<TValue> values = new List<TValue>();
-
-        // save the dictionary to lists
-        public void OnBeforeSerialize()
-        {
-            keys.Clear();
-            values.Clear();
-            foreach (KeyValuePair<TKey, TValue> pair in this)
-            {
-                keys.Add(pair.Key);
-                values.Add(pair.Value);
-            }
-        }
-
-        // load dictionary from lists
-        public void OnAfterDeserialize()
-        {
-            this.Clear();
-
-            if (keys.Count != values.Count)
-                throw new System.Exception(string.Format("there are {0} keys and {1} values after deserialization. Make sure that both key and value types are serializable."));
-
-            for (int i = 0; i < keys.Count; i++)
-                this.Add(keys[i], values[i]);
-        }
-    }
 }

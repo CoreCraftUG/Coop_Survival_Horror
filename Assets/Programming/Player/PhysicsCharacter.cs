@@ -126,6 +126,7 @@ namespace CoreCraft.Character
                     */
 
                     orientation = Vector3.ProjectOnPlane(orientation, _groundedData.GroundNormal).normalized;
+                    Debug.DrawRay(transform.position - (orientation * 2), orientation * 4,Color.green);
                     _rigidbody.AddForce(orientation * _currentSpeed, ForceMode.Force);
 
                     transform.parent = _groundedData.IsMoving ? _groundedData.GroundObject.transform : null;

@@ -476,7 +476,7 @@ MonoBehaviour:
     m_Bits: 193
   _stepOffset: 0.3
   _playerRadius: 0.5
-  _gravityMultiplier: 12
+  _gravityMultiplier: 1
   _maxSlopeAngle: 45
   FreeVision:
     m_InternalValue: 1
