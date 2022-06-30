@@ -86,14 +86,14 @@ namespace CoreCraft.Minigames
 
         public void FixedUpdate()
         {
-            if ( _minigameManager._inputValue != 0 && _activeCircle[0].GetComponent<Image>().color != Color.green)
+            if ( _minigameManager._inputValue.Value != 0 && _activeCircle[0].GetComponent<Image>().color != Color.green)
             {
                 foreach(GameObject obj in _activeCircle)
                 {
-                    obj.transform.Rotate(0, 0, Time.deltaTime * _rotationSpeed * _minigameManager._inputValue);
+                    obj.transform.Rotate(0, 0, Time.deltaTime * _rotationSpeed * _minigameManager._inputValue.Value);
                 }
             }
-            if(_minigameManager._inputValue2 != 0)
+            if(_minigameManager._inputValue2.Value != 0)
             {
                 if (_activeCircle == _circle1 && _circle3[0].GetComponent<Image>().color != Color.green)
                 {
@@ -122,9 +122,9 @@ namespace CoreCraft.Minigames
                     }
                     
                 }
-                _minigameManager._inputValue2 = 0;
+                _minigameManager._inputValue2.Value = 0;
             }
-            if(_minigameManager._inputValue == 0 && _minigameManager._inputValue2 == 0)
+            if(_minigameManager._inputValue.Value == 0 && _minigameManager._inputValue2.Value == 0)
                 CheckCorrect();
               
 

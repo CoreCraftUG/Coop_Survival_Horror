@@ -1,47 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace CoreCraft.Minigames
 {
-    public class MinigameManager : MonoBehaviour
+    public class MinigameManager : NetworkBehaviour
     {
-        public float _inputValue;
-        public bool _inputBool;
-        public float _inputValue2;
-        public bool _inputBool2;
+        public NetworkVariable<float>_inputValue = new NetworkVariable<float>();
+        public NetworkVariable<bool> _inputBool = new NetworkVariable<bool>();
+        public NetworkVariable<float> _inputValue2 = new NetworkVariable<float>();
+        public NetworkVariable<bool> _inputBool2 = new NetworkVariable<bool>();
         [SerializeField] private GameObject _hanoi;
         [SerializeField] private GameObject _turnShapes;
         [SerializeField] private GameObject _circleGame;
-        private bool _hanoiActive = false;
-        private bool _turnShapesActive = false;
-        private bool _circleGameActive = true;
-        // Start is called before the first frame update
-        public void MinigameInput(InputAction.CallbackContext context)
+        protected bool _hanoiActive = false;
+        protected bool _turnShapesActive = false;
+        protected bool _circleGameActive = true;
+
+        public virtual void MinigameInput(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                _inputValue = context.ReadValue<float>();
-                _inputBool = true;
+                SetInputValue1ServerRpc(context.ReadValue<float>());
             }
             else
             {
-                _inputValue = 0;
+                // SetInputValue1ServerRpc(0);
             }
         }
 
-        public void MinigameInput2(InputAction.CallbackContext context)
+        public virtual void MinigameInput2(InputAction.CallbackContext context)
         {
             if(context.phase == InputActionPhase.Performed)
             {
-                _inputValue2 = context.ReadValue<float>();
-                _inputBool2 = true;
+                SetInputValue2ServerRpc(context.ReadValue<float>());
             }
             else
             {
-                _inputValue2 = 0;
+                // SetInputValue2ServerRpc(0);
             }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void SetInputValue1ServerRpc(float input)
+        {
+            _inputValue.Value = input;
+
+            if (input == 0)
+                _inputBool.Value = true;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void SetInputValue2ServerRpc(float input)
+        {
+            _inputValue2.Value = input;
+
+            if (input == 0)
+                _inputBool2.Value = true;
         }
 
         public void HanoiSwitch()

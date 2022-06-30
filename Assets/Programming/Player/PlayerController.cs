@@ -24,7 +24,7 @@ namespace CoreCraft.Character
         private NetworkObject _networkObject;
         private NetworkVariable<Vector3> _networkPosition = new NetworkVariable<Vector3>();
 
-        private bool _hasPlayer = true;
+        private NetworkVariable<bool> _hasPlayer = new NetworkVariable<bool>(true);
 
         private void Awake()
         {
@@ -82,7 +82,26 @@ namespace CoreCraft.Character
             PhysicsCharacter = obj.GetComponent<PhysicsCharacter>();
         }
 
-        public void SetHasPlayer(bool state) => _hasPlayer = state;
+        public void MiniGameInteraction(bool playerState, Vector3 networkPosition)
+        {
+            if (!playerState)
+            {
+                MiniGameInteractionServerRpc(networkPosition);
+            }
+            else
+            {
+                SetPositionServerRpc(PhysicsCharacter.PlayerObjectAttachmentTransform.position);
+            }
+            SetHasPlayer(playerState);
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void MiniGameInteractionServerRpc(Vector3 networkPosition) => _networkPosition.Value = networkPosition;
+
+        public void SetHasPlayer(bool state) => SetHasPlayerServerRpc(state);
+
+        [ServerRpc(RequireOwnership = false)]
+        private void SetHasPlayerServerRpc(bool state) => _hasPlayer.Value = state;
 
         public void WalkInput(InputAction.CallbackContext callback)
         {
@@ -178,9 +197,6 @@ namespace CoreCraft.Character
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void SetPositionServerRpc(Vector3 position)
-        {
-            _networkPosition.Value = position;
-        }
+        private void SetPositionServerRpc(Vector3 position) => _networkPosition.Value = position;
     }
 }

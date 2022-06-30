@@ -31,6 +31,8 @@ namespace CoreCraft.Character
         private Vector3 _playerCameraPos;
         private Vector3 _playerCameraRot;
 
+        private NetworkVariable<ulong> _ownedMiniGameNetworkId = new NetworkVariable<ulong>();
+
         public void Start()
         {
             _playerController = GetComponent<PlayerController>();
@@ -55,28 +57,21 @@ namespace CoreCraft.Character
 
         public void FixedUpdate()
         {
-            if (Physics.Raycast(_playerController.PlayerCamera.transform.position, _playerController.PlayerCamera.transform.forward, out RaycastHit hitInfo, _itemRange))
+            if (Physics.Raycast(_playerController.PlayerCamera.transform.position, _playerController.PlayerCamera.transform.forward, out RaycastHit hit, _itemRange))
             {
-                if (hitInfo.transform.tag == "Item")
+                RaycastHit oldHit = _itemHit;
+                _itemHit = hit;
+                if (_itemHit.transform.tag == "Item")
                 {
 
-                    if (_itemHit.transform != null && _itemHit.transform != hitInfo.transform)
+                    if (_itemHit.transform != null && _itemHit.transform != hit.transform)
                         if (_itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
-                            if (_itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled == true)
-                                _itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled = false;
-
-                    _itemHit = hitInfo;
+                            if (_itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled)
+                                oldHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled = false;
+                    
 
                     if (_itemHit.transform.GetComponentInChildren<ItemOutline>())
                         _itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled = true;
-                }
-                if(hitInfo.transform.tag == "Minigame")
-                {
-                    _playerCameraPos = this.transform.GetComponent<PlayerController>().PlayerCamera.transform.position;
-                    _playerCameraRot = this.transform.GetComponent<PlayerController>().PlayerCamera.transform.eulerAngles;
-                    this.transform.GetComponent<PlayerInput>().SwitchCurrentActionMap("MinigameMap");
-                    this.transform.GetComponent<PlayerController>().PlayerCamera.transform.position =  hitInfo.transform.GetComponent<BaseMinigame>().MinigamePos;
-                    this.transform.GetComponent<PlayerController>().PlayerCamera.transform.eulerAngles = hitInfo.transform.GetComponent<BaseMinigame>().MinigameRot;
                 }
                 else
                 {
@@ -85,7 +80,7 @@ namespace CoreCraft.Character
                 }
             }
             else if (_itemHit.transform != null && _itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
-                if (_itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled == true)
+                if (_itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled)
                     _itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled = false;
             Debug.DrawRay(_playerController.PlayerCamera.transform.position, _playerController.PlayerCamera.transform.forward * _itemRange, Color.green, 0.1f);
         }
@@ -94,16 +89,18 @@ namespace CoreCraft.Character
         {
             if (context.phase == InputActionPhase.Started)
             {
-                this.transform.GetComponent<PlayerController>().PlayerCamera.transform.eulerAngles = _playerCameraRot;
-                this.transform.GetComponent<PlayerController>().PlayerCamera.transform.position = _playerCameraPos;
+                ResetOwnerServerRpc();
+                this.transform.GetComponent<PlayerController>().MiniGameInteraction(true, Vector3.zero);
                 this.transform.GetComponent<PlayerInput>().SwitchCurrentActionMap("PlayerMap");
             }
         }
+
         public void Interact(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Started)
             {
-                if (_itemHit.transform != null && _itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
+                if (_itemHit.transform.tag == "Item" && _itemHit.transform != null && _itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
+                {
                     if (_itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled)
                     {
                         var item = _itemHit.transform.GetComponent<TestItem>();
@@ -122,7 +119,53 @@ namespace CoreCraft.Character
                             }
                         }
                     }
+                }
+                else if (_itemHit.transform.tag == "Minigame")
+                {
+                    SpawnAsOwnerServerRpc(_itemHit.transform.GetComponent<NetworkObject>().NetworkObjectId, NetworkManager.Singleton.LocalClientId);
+                    SwitchInputActionMapServerRpc(NetworkManager.Singleton.LocalClientId, "MinigameMap");
+                    this.transform.GetComponent<PlayerController>().MiniGameInteraction(true, _itemHit.transform.GetComponent<BaseMinigame>().MinigamePos);
+                }
             }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void SwitchInputActionMapServerRpc(ulong clientId, string actionMapName)
+        {
+            SwitchInputActionMapClientRpc(clientId,actionMapName);
+        }
+
+        [ClientRpc]
+        private void SwitchInputActionMapClientRpc(ulong clientId, string actionMapName)
+        {
+            if (NetworkManager.Singleton.LocalClientId == clientId)
+            {
+                this.transform.GetComponent<PlayerInput>().SwitchCurrentActionMap(actionMapName);
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void SpawnAsOwnerServerRpc(ulong hitId, ulong clientId)
+        {
+            ResetOwnerServerRpc();
+            NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[hitId];
+            networkObject.ChangeOwnership(clientId);
+            _ownedMiniGameNetworkId.Value = hitId;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void ResetOwnerServerRpc()
+        {
+            if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(_ownedMiniGameNetworkId.Value))
+                return;
+
+            NetworkObject nObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_ownedMiniGameNetworkId.Value];
+
+            if (nObject.IsOwnedByServer)
+                return;
+
+            nObject.RemoveOwnership();
+            _ownedMiniGameNetworkId = new NetworkVariable<ulong>();
         }
 
         [ServerRpc(RequireOwnership = false)]

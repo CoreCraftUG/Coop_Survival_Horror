@@ -25,7 +25,7 @@ namespace CoreCraft.Minigames
             {
                 img.transform.eulerAngles =  new Vector3(0, 0, Random.Range(0, 360));
             }
-            _inputBool = true;
+            _inputBool.Value = true;
         }
 
         public void CheckIfCorrect()
@@ -41,17 +41,17 @@ namespace CoreCraft.Minigames
                     _buttons[i].enabled = false;
                 }
             }
-            _inputBool = false;
+            _inputBool.Value = false;
         }
 
         public void FixedUpdate()
         {
             Debug.Log(_minigameManager._inputValue);
-            if(_minigameManager._inputValue != 0)
+            if(_minigameManager._inputValue.Value != 0)
                 Debug.Log(_minigameManager._inputValue);
-            if(_turnables[_activeButton].color != Color.green && _minigameManager._inputValue != 0)
-                _turnables[_activeButton].transform.Rotate(0, 0, Time.deltaTime * 40 * _minigameManager._inputValue);
-            if (_minigameManager._inputValue == 0)
+            if(_turnables[_activeButton].color != Color.green && _minigameManager._inputValue.Value != 0)
+                _turnables[_activeButton].transform.Rotate(0, 0, Time.deltaTime * 40 * _minigameManager._inputValue.Value);
+            if (_minigameManager._inputValue.Value == 0)
                 CheckIfCorrect();
             else
             {
