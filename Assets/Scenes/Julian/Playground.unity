@@ -432,57 +432,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ef1fdb730c3c84e83e23753786d123, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &44053555
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 44053557}
-  - component: {fileID: 44053556}
-  m_Layer: 0
-  m_Name: MinigameManaer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &44053556
+--- !u!114 &44053556 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5179672894428857865, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+    type: 3}
+  m_PrefabInstance: {fileID: 5179672894468715069}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 44053555}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 096de3e72e7ac6740b69679e19b70a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputValue: 0
-  _inputBool: 0
-  _inputValue2: 0
-  _inputBool2: 0
-  _hanoi: {fileID: 1607209829}
-  _turnShapes: {fileID: 1858598083}
-  _circleGame: {fileID: 609794654}
---- !u!4 &44053557
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 44053555}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1105.111, y: 507.18823, z: 201.00351}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 18
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &64570458
 GameObject:
   m_ObjectHideFlags: 0
@@ -21489,6 +21450,90 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7835508615648238480}
   m_CullTransparentMesh: 1
+--- !u!1001 &5179672894468715069
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1105.111
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 507.18823
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 201.00351
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857864, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5179672894428857865, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: _hanoi
+      value: 
+      objectReference: {fileID: 1607209829}
+    - target: {fileID: 5179672894428857865, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: _circleGame
+      value: 
+      objectReference: {fileID: 609794654}
+    - target: {fileID: 5179672894428857865, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: _turnShapes
+      value: 
+      objectReference: {fileID: 1858598083}
+    - target: {fileID: 5179672894428857870, guid: b6af66f1ef8e8d24ea0432c088fca53d,
+        type: 3}
+      propertyPath: m_Name
+      value: MinigameManaer
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b6af66f1ef8e8d24ea0432c088fca53d, type: 3}
 --- !u!1 &5202339015511376341
 GameObject:
   m_ObjectHideFlags: 0
