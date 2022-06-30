@@ -266,6 +266,15 @@ namespace CoreCraft.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeaveMiniGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""17f91f34-fb94-4b2b-9454-37c0ca39e973"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -334,6 +343,17 @@ namespace CoreCraft.Input
                     ""action"": ""MiniGame2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""31f41e89-4808-47b2-a6ba-e5eccc3730f6"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeaveMiniGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -373,6 +393,7 @@ namespace CoreCraft.Input
             m_MinigameMap = asset.FindActionMap("MinigameMap", throwIfNotFound: true);
             m_MinigameMap_MiniGame1 = m_MinigameMap.FindAction("MiniGame1", throwIfNotFound: true);
             m_MinigameMap_MiniGame2 = m_MinigameMap.FindAction("MiniGame2", throwIfNotFound: true);
+            m_MinigameMap_LeaveMiniGame = m_MinigameMap.FindAction("LeaveMiniGame", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -548,12 +569,14 @@ namespace CoreCraft.Input
         private IMinigameMapActions m_MinigameMapActionsCallbackInterface;
         private readonly InputAction m_MinigameMap_MiniGame1;
         private readonly InputAction m_MinigameMap_MiniGame2;
+        private readonly InputAction m_MinigameMap_LeaveMiniGame;
         public struct MinigameMapActions
         {
             private @PlayerInput m_Wrapper;
             public MinigameMapActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
             public InputAction @MiniGame1 => m_Wrapper.m_MinigameMap_MiniGame1;
             public InputAction @MiniGame2 => m_Wrapper.m_MinigameMap_MiniGame2;
+            public InputAction @LeaveMiniGame => m_Wrapper.m_MinigameMap_LeaveMiniGame;
             public InputActionMap Get() { return m_Wrapper.m_MinigameMap; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -569,6 +592,9 @@ namespace CoreCraft.Input
                     @MiniGame2.started -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame2;
                     @MiniGame2.performed -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame2;
                     @MiniGame2.canceled -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnMiniGame2;
+                    @LeaveMiniGame.started -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnLeaveMiniGame;
+                    @LeaveMiniGame.performed -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnLeaveMiniGame;
+                    @LeaveMiniGame.canceled -= m_Wrapper.m_MinigameMapActionsCallbackInterface.OnLeaveMiniGame;
                 }
                 m_Wrapper.m_MinigameMapActionsCallbackInterface = instance;
                 if (instance != null)
@@ -579,6 +605,9 @@ namespace CoreCraft.Input
                     @MiniGame2.started += instance.OnMiniGame2;
                     @MiniGame2.performed += instance.OnMiniGame2;
                     @MiniGame2.canceled += instance.OnMiniGame2;
+                    @LeaveMiniGame.started += instance.OnLeaveMiniGame;
+                    @LeaveMiniGame.performed += instance.OnLeaveMiniGame;
+                    @LeaveMiniGame.canceled += instance.OnLeaveMiniGame;
                 }
             }
         }
@@ -610,6 +639,7 @@ namespace CoreCraft.Input
         {
             void OnMiniGame1(InputAction.CallbackContext context);
             void OnMiniGame2(InputAction.CallbackContext context);
+            void OnLeaveMiniGame(InputAction.CallbackContext context);
         }
     }
 }

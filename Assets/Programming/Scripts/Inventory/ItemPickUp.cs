@@ -7,7 +7,7 @@ using Unity.Netcode;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-
+using CoreCraft.Minigames;
 namespace CoreCraft.Character
 {
     public class ItemPickUp : NetworkBehaviour
@@ -28,6 +28,8 @@ namespace CoreCraft.Character
         public float CurrentOxygen;
         private ItemOutline itemOutline;
         private PlayerController _playerController;
+        private Vector3 _playerCameraPos;
+        private Vector3 _playerCameraRot;
 
         public void Start()
         {
@@ -68,6 +70,14 @@ namespace CoreCraft.Character
                     if (_itemHit.transform.GetComponentInChildren<ItemOutline>())
                         _itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled = true;
                 }
+                if(hitInfo.transform.tag == "Minigame")
+                {
+                    _playerCameraPos = this.transform.GetComponent<PlayerController>().PlayerCamera.transform.position;
+                    _playerCameraRot = this.transform.GetComponent<PlayerController>().PlayerCamera.transform.eulerAngles;
+                    this.transform.GetComponent<PlayerInput>().SwitchCurrentActionMap("MinigameMap");
+                    this.transform.GetComponent<PlayerController>().PlayerCamera.transform.position =  hitInfo.transform.GetComponent<BaseMinigame>().MinigamePos;
+                    this.transform.GetComponent<PlayerController>().PlayerCamera.transform.eulerAngles = hitInfo.transform.GetComponent<BaseMinigame>().MinigameRot;
+                }
                 else
                 {
                     if (_itemHit.transform != null && _itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
@@ -80,6 +90,15 @@ namespace CoreCraft.Character
             Debug.DrawRay(_playerController.PlayerCamera.transform.position, _playerController.PlayerCamera.transform.forward * _itemRange, Color.green, 0.1f);
         }
 
+        public void LeaveMinigame(InputAction.CallbackContext context)
+        {
+            if (context.phase == InputActionPhase.Started)
+            {
+                this.transform.GetComponent<PlayerController>().PlayerCamera.transform.eulerAngles = _playerCameraRot;
+                this.transform.GetComponent<PlayerController>().PlayerCamera.transform.position = _playerCameraPos;
+                this.transform.GetComponent<PlayerInput>().SwitchCurrentActionMap("PlayerMap");
+            }
+        }
         public void Interact(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Started)

@@ -242,6 +242,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "LeaveMiniGame",
+                    "type": "Button",
+                    "id": "17f91f34-fb94-4b2b-9454-37c0ca39e973",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -310,6 +319,17 @@
                     "action": "MiniGame2",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "31f41e89-4808-47b2-a6ba-e5eccc3730f6",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeaveMiniGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

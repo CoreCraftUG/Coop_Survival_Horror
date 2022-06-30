@@ -10,8 +10,8 @@ namespace CoreCraft.Character
 {
     public class PlayerController : NetworkBehaviour
     {
-        public PhysicsCharacter PhysicsCharacter { get; private set; }
-        public PlayerCamera PlayerCamera { get; private set; }
+        public PhysicsCharacter PhysicsCharacter; //{ get; private set; }
+        public PlayerCamera PlayerCamera; //{ get; private set; }
 
         [SerializeField] public float MouseXSensitivity;
         [SerializeField] public float MouseYSensitivity;

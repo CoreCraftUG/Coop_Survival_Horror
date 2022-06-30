@@ -7,5 +7,6 @@ namespace CoreCraft
     public class StickScript : MonoBehaviour
     {
         public List<GameObject> BlockList;
+        public List<GameObject> Slots;
     }
 }

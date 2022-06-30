@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace CoreCraft.Minigames
 {
-    public class Turnables : MinigameManager
+    public class Turnables : BaseMinigame
     {
 
         [SerializeField] private List<Image> _turnables;

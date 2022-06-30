@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace CoreCraft.Minigames
 {
-    public class CirclesGame : MinigameManager
+    public class CirclesGame : BaseMinigame
     {
         [SerializeField] private List<GameObject> _circle1;
         [SerializeField] private List<GameObject> _circle2;
