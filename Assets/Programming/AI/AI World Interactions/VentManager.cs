@@ -180,7 +180,7 @@ namespace CoreCraft.Enemy
             source.clip = _debugVentAudioClip;
             source.Play();
 
-            Vector2Int Ids = GetVentId1And2();
+            Vector2Int Ids = GetDebugVentId1And2();
             if (Ids == Vector2Int.zero)
                 return;
 
@@ -276,7 +276,7 @@ namespace CoreCraft.Enemy
             }));
         }
 
-        private Vector2Int GetVentId1And2()
+        private Vector2Int GetDebugVentId1And2()
         {
             int ventId1 = 0;
             int ventId2 = 0;
@@ -302,6 +302,32 @@ namespace CoreCraft.Enemy
 
             return new Vector2Int(ventId1, ventId2);
         }
+        private Vector2Int GetPreviewVentId1And2()
+        {
+            int ventId1 = 0;
+            int ventId2 = 0;
+
+            if (_ventDictionary.Any(p => p.Value.VentObject == _previewVent1))
+            {
+                ventId1 = _ventDictionary.Single(p => p.Value.VentObject == _previewVent1).Key;
+            }
+            else
+            {
+                Debug.Log("Debug Vent Object 1 == null");
+                return Vector2Int.zero;
+            }
+            if (_ventDictionary.Any(p => p.Value.VentObject == _previewVent2))
+            {
+                ventId2 = _ventDictionary.Single(p => p.Value.VentObject == _previewVent2).Key;
+            }
+            else
+            {
+                Debug.Log("Debug Vent Object 2 == null");
+                return Vector2Int.zero;
+            }
+
+            return new Vector2Int(ventId1, ventId2);
+        }
 
         [TabGroup("Debug"),
          Button("Debug Move Path", ButtonSizes.Medium)]
@@ -313,7 +339,7 @@ namespace CoreCraft.Enemy
                 return;
             }
 
-            Vector2Int Ids = GetVentId1And2();
+            Vector2Int Ids = GetDebugVentId1And2();
             if (Ids == Vector2Int.zero)
                 return;
 
@@ -340,6 +366,7 @@ namespace CoreCraft.Enemy
 
 
             line.SetPositions(linePath);
+            Debug.Log($"X: {directionValues[0]} Y: {directionValues[1]} Z: {directionValues[2]}");
         }
 
         private Dictionary<int, Vector3> GetDirectionDictionary(int[] directionValues)
@@ -562,27 +589,12 @@ namespace CoreCraft.Enemy
                 return;
             }
 
-            int ventId1 = 0;
-            int ventId2 = 0;
+            Vector2Int Ids = GetPreviewVentId1And2();
+            if (Ids == Vector2Int.zero)
+                return;
 
-            if (_ventDictionary.Any(p => p.Value.VentObject == _previewVent1))
-            {
-                ventId1 = _ventDictionary.Single(p => p.Value.VentObject == _previewVent1).Key;
-            }
-            else
-            {
-                Debug.Log("Debug Vent Object 1 == null");
-                return;
-            }
-            if (_ventDictionary.Any(p => p.Value.VentObject == _previewVent2))
-            {
-                ventId2 = _ventDictionary.Single(p => p.Value.VentObject == _previewVent2).Key;
-            }
-            else
-            {
-                Debug.Log("Debug Vent Object 2 == null");
-                return;
-            }
+            int ventId1 = Ids.x;
+            int ventId2 = Ids.y;
 
             if (_pathDirectionX  == _pathDirectionY || _pathDirectionX == _pathDirectionZ || _pathDirectionY == _pathDirectionZ)
             {
@@ -593,6 +605,46 @@ namespace CoreCraft.Enemy
             _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[0] = _pathDirectionX;
             _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[1] = _pathDirectionY;
             _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[2] = _pathDirectionZ;
+        }
+
+
+        [TabGroup("Level Design Tool"),
+         Button("Mirror Path", ButtonSizes.Medium)]
+        private void MirrorPath()
+        {
+            Vector2Int Ids = GetPreviewVentId1And2();
+            if (Ids == Vector2Int.zero)
+                return;
+
+            int ventId1 = Ids.x;
+            int ventId2 = Ids.y;
+
+            int vent1Pos1 = 0;
+            int vent1Pos2 = 0;
+            int vent1Pos3 = 0;
+
+            for (int i = 0; i < _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray.Length; i++)
+            {
+                switch (_ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[i])
+                {
+                    case 1:
+                        vent1Pos1 = i;
+                        break;
+                    case 2:
+                        vent1Pos2 = i;
+                        break;
+                    default:
+                        vent1Pos3 = i;
+                        break;
+                }
+            }
+
+            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos1] =
+                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos3];
+            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos2] =
+                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos2];
+            _ventDictionary[ventId2].PathDictionary[ventId1].PathOrderArray[vent1Pos3] =
+                _ventDictionary[ventId1].PathDictionary[ventId2].PathOrderArray[vent1Pos1];
         }
 
         [TabGroup("Level Design Tool"),
