@@ -38,7 +38,7 @@ namespace CoreCraft.Character
             RotateRequestServerRpc(rotationInput);
         }
 
-        [ServerRpc(RequireOwnership = false)]
+        [ServerRpc(RequireOwnership = false, Delivery = RpcDelivery.Unreliable)]
         private void RotateRequestServerRpc(Vector2 rotation)
         {
             _yRotation.Value += rotation.x;

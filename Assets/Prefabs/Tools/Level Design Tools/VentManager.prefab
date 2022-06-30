@@ -45,9 +45,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ventName: 
+  _pathDirectionX: 1
+  _pathDirectionY: 1
+  _pathDirectionZ: 1
   _spawnDistance: 10
   _spawnHeight: 4
   _ventObjectList: []
   _ventCount: 0
+  _soundTravelSpeed: 5
+  _ventPathObject: {fileID: 0}
   _ventPrefabObject: {fileID: 4833575899496448112, guid: c5b3d59342b4156418c589ee092c1278,
     type: 3}
+  _ventSoundPrefabObject: {fileID: 5458768032156333800, guid: d82159f4b11f59f46a73ed6922d7c25f,
+    type: 3}
+  _ventPathPrefabObject: {fileID: 5264031212260215506, guid: b827cc34f10afb84dabe79f6fdae9ad6,
+    type: 3}
+  _ventCrawlingSFXList:
+  - {fileID: 8300000, guid: d89a43b813727df4496f652710212de0, type: 3}
