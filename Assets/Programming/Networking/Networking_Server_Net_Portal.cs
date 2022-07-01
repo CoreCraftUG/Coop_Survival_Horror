@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BehaviorDesigner.Runtime.Tasks;
+using CoreCraft;
 using CoreCraft.Core;
 using CoreCraft.Networking;
 using CoreCraft.Networking.Steam;
@@ -116,6 +117,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
     private void LoadSceneClientRpc()
     {
         NM.Singleton.SceneManager.LoadScene(_gameScene, LoadSceneMode.Single);
+        EventManager.Instance.GameStarted.Invoke(true);
     }
 
     public void EndRound()
@@ -125,6 +127,7 @@ public class Networking_Server_Net_Portal : Singleton<Networking_Server_Net_Port
         DespawnPlayerObjectServerRpc(client);
 
         gameInProgress = false;
+        EventManager.Instance.GameStarted.Invoke(false);
 
         NM.Singleton.SceneManager.LoadScene(_menuScene, LoadSceneMode.Single);
     }

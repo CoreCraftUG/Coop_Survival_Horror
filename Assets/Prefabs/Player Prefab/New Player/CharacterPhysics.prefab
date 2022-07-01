@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 6381468515386173077}
   m_Layer: 0
   m_Name: CharacterPhysics
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -183,13 +183,13 @@ MonoBehaviour:
   _crouchHeight: 1
   _standardWalkHeight: 2
   _gravityMultiply: 1
-  _airDrag: 2
-  _groundDrag: 4
+  _airDrag: 20
+  _groundDrag: 40
   CameraHolderTransform: {fileID: 6381468515155057141}
   _walkSpeed: 10
   _crouchSpeed: 5
   _runSpeed: 15
-  _airControl: 2
+  _airControl: 0.2
   CharacterState: 0
 --- !u!143 &6381468515386173077
 CharacterController:

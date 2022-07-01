@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using BehaviorDesigner.Runtime.Tasks.Unity.UnityCharacterController;
+using CoreCraft.Networking;
 using UnityEngine;
 
 namespace CoreCraft.Character
@@ -66,6 +67,7 @@ namespace CoreCraft.Character
                     };
 
                     Vector3 moveDirection = transform.forward * _direction.x + transform.right * _direction.z;
+                    Vector3 gravityDirection = Vector3.zero; 
 
 
                     moveDirection = Vector3.ProjectOnPlane(moveDirection, _groundedData.GroundNormal).normalized;
@@ -73,17 +75,17 @@ namespace CoreCraft.Character
 
                     if (!_groundedData.IsMoving)
                     {
-                        moveDirection += transform.up * (_yGravity * _gravityMultiply);
+                        gravityDirection += transform.up * (_yGravity * _gravityMultiply);
                     }
                     else
                     {
-                        moveDirection += _groundedData.GroundPosition - transform.position;
+                        gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                     }
 
                     _lastDirection = moveDirection;
                     _lastSpeed = _currentSpeed;
 
-                    _characterController.Move(moveDirection * _currentSpeed * Time.deltaTime);
+                    _characterController.Move(((moveDirection * _currentSpeed) + gravityDirection) * Time.deltaTime);
                     break;
                 }
                 case true: //not Grounded & Move requested
@@ -91,9 +93,15 @@ namespace CoreCraft.Character
                     _currentSpeed = _walkSpeed;
                     CharacterState = ECharacterState.Walk;
 
-                    if (_lastSpeed < 0.1f)
+                    if (_lastSpeed < 0.1)
+                    {
                         _lastSpeed = 0;
+                        _lastDirection = Vector3.zero;
+                    }
+
                     Vector3 airMoveDirection = Vector3.zero;
+                    Vector3 gravityDirection = Vector3.zero;
+
                     if (_lastSpeed > 0)
                     {
                         airMoveDirection = transform.forward * _direction.x + transform.right * _direction.z;
@@ -102,15 +110,15 @@ namespace CoreCraft.Character
 
                         if (!_groundedData.IsMoving)
                         {
-                            _lastDirection += transform.up * (_yGravity * _gravityMultiply);
+                            gravityDirection += transform.up * (_yGravity * _gravityMultiply);
                         }
                         else
                         {
-                            _lastDirection += _groundedData.GroundPosition - transform.position;
+                            gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                         }
 
-                        _characterController.Move(_lastDirection * _airControl * _lastSpeed * Time.deltaTime);
-                        _lastSpeed /= _airDrag;
+                        _characterController.Move(((_lastDirection * _airControl * _lastSpeed) + gravityDirection) * Time.deltaTime);
+                        _lastSpeed -= _airDrag * Time.deltaTime;
                     }
                     else
                     {
@@ -120,10 +128,10 @@ namespace CoreCraft.Character
                         }
                         else
                         {
-                            _lastDirection += _groundedData.GroundPosition - transform.position;
+                            gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                         }
-                        _characterController.Move(_lastDirection * _lastSpeed * Time.deltaTime);
-                        _lastSpeed /= _airDrag;
+                        _characterController.Move(_lastDirection * Time.deltaTime);
+                        _lastSpeed -= _airDrag * Time.deltaTime;
                     }
                 }
                     break;
@@ -131,49 +139,64 @@ namespace CoreCraft.Character
                 {
                     _currentSpeed = _walkSpeed;
                     CharacterState = ECharacterState.Walk;
+                    Vector3 gravityDirection = Vector3.zero;
 
                     if (_lastSpeed < 0.1)
+                    {
                         _lastSpeed = 0;
+                        _lastDirection = Vector3.zero;
+                    }
 
                     if (_lastSpeed > 0)
                     {
                         if (!_groundedData.IsMoving)
                         {
-                            _lastDirection += transform.up * (_yGravity * _gravityMultiply);
+                            gravityDirection += transform.up * (_yGravity * _gravityMultiply);
                         }
                         else
                         {
-                            _lastDirection += _groundedData.GroundPosition - transform.position;
+                            gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                         }
 
-                        _characterController.Move(_lastDirection * _lastSpeed * Time.deltaTime);
-                        _lastSpeed /= _airDrag;
+                        _characterController.Move(((_lastDirection * _lastSpeed) + gravityDirection) * Time.deltaTime);
+                        _lastSpeed -= _airDrag * Time.deltaTime;
+                    }
+                    else
+                    {
+                        _lastDirection += transform.up * (_yGravity * _gravityMultiply);
+                        _characterController.Move(_lastDirection * Time.deltaTime);
+                        _lastSpeed -= _airDrag * Time.deltaTime;
                     }
                 }
                     break;
                 default: //Grounded & no Move requested
                 {
+                    Vector3 gravityDirection = Vector3.zero;
+
                     if (_lastSpeed < 0.1)
+                    {
                         _lastSpeed = 0;
+                        _lastDirection = Vector3.zero;
+                    }
 
                     if (!_groundedData.IsMoving)
                     {
-                        _lastDirection += transform.up * (_yGravity * _gravityMultiply);
+                        gravityDirection += transform.up * (_yGravity * _gravityMultiply);
                     }
                     else
                     {
-                        _lastDirection += _groundedData.GroundPosition - transform.position;
+                        gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                     }
 
                     if (_lastSpeed > 0)
                     {
-                        _characterController.Move(_lastDirection * _lastSpeed * Time.deltaTime);
-                        _lastSpeed /= _groundDrag;
+                        _characterController.Move(((_lastDirection * _lastSpeed) + gravityDirection) * Time.deltaTime);
+                        _lastSpeed -= _groundDrag * Time.deltaTime;
                     }
                     else
                     {
                         _characterController.Move(_lastDirection * Time.deltaTime);
-                        _lastSpeed /= _groundDrag;
+                        _lastSpeed -= _groundDrag * Time.deltaTime;
                     }
                 }
                     break;
@@ -186,10 +209,10 @@ namespace CoreCraft.Character
             // _moveRequest = false;
         }
 
-        public void RequestMove(Vector3 moveVector)
+        public void RequestMove(bool started,Vector3 moveVector)
         {
             _direction = moveVector;
-            _moveRequest = true;
+            _moveRequest = started;
         }
 
         public void RequestRotate(Vector2 rotation)
@@ -229,6 +252,7 @@ namespace CoreCraft.Character
             else
             {
                 _groundedData.IsGround = false;
+                _groundedData.IsMoving = false;
             }
         }
     }

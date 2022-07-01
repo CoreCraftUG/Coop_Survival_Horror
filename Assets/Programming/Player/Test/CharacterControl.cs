@@ -35,7 +35,7 @@ namespace CoreCraft.Character
             Vector2 input = context.ReadValue<Vector2>();
             Vector3 vector3Input = new Vector3(input.y, 0, input.x);
 
-            _characterPhysics.RequestMove(vector3Input);
+            _characterPhysics.RequestMove(context.phase != InputActionPhase.Canceled ,vector3Input);
         }
 
         public void LookInput(InputAction.CallbackContext context)

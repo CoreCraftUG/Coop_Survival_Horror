@@ -100,7 +100,7 @@ namespace CoreCraft.Character
 
         }
         
-        private void LateUpdate()
+        private void Update()
         {
             if (!IsServer)
                 return;
@@ -129,7 +129,16 @@ namespace CoreCraft.Character
                     Debug.DrawRay(transform.position - (orientation * 2), orientation * 4,Color.green);
                     _rigidbody.AddForce(orientation * _currentSpeed, ForceMode.Force);
 
-                    transform.parent = _groundedData.IsMoving ? _groundedData.GroundObject.transform : null;
+                    if (_groundedData.IsMoving)
+                    {
+                        transform.parent = _groundedData.GroundObject.transform;
+                        _rigidbody.velocity += _groundedData.GroundObject.GetComponent<Rigidbody>().velocity;
+                    }
+                    else
+                    {
+                        transform.parent = null;
+                    }
+
                     _rigidbody.drag = _groundDrag;
                     SpeedControl();
                     break;
