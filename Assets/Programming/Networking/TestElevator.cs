@@ -6,7 +6,7 @@ using DG.Tweening;
 
 namespace CoreCraft.Networking
 {
-    public class TestElevator : NetworkBehaviour
+    public class TestElevator : MonoBehaviour/*NetworkBehaviour*/
     {
         [SerializeField] private float _targetHeight;
         [SerializeField] private float _time;
@@ -23,7 +23,7 @@ namespace CoreCraft.Networking
         
         void Update()
         {
-            if (IsServer && canMove)
+            if (/*IsServer &&*/ canMove)
             {
                 canMove = false;
                 if (change)

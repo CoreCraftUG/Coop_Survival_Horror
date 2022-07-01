@@ -141,6 +141,15 @@ namespace CoreCraft.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""F"",
+                    ""type"": ""Button"",
+                    ""id"": ""27593727-75ee-41df-89df-198107dc5736"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -240,6 +249,17 @@ namespace CoreCraft.Input
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""980e53fb-8dd7-4b5e-addd-7975d5007a22"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""F"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -389,6 +409,7 @@ namespace CoreCraft.Input
             m_PlayerMap_Look = m_PlayerMap.FindAction("Look", throwIfNotFound: true);
             m_PlayerMap_Run = m_PlayerMap.FindAction("Run", throwIfNotFound: true);
             m_PlayerMap_Crouch = m_PlayerMap.FindAction("Crouch", throwIfNotFound: true);
+            m_PlayerMap_F = m_PlayerMap.FindAction("F", throwIfNotFound: true);
             // MinigameMap
             m_MinigameMap = asset.FindActionMap("MinigameMap", throwIfNotFound: true);
             m_MinigameMap_MiniGame1 = m_MinigameMap.FindAction("MiniGame1", throwIfNotFound: true);
@@ -507,6 +528,7 @@ namespace CoreCraft.Input
         private readonly InputAction m_PlayerMap_Look;
         private readonly InputAction m_PlayerMap_Run;
         private readonly InputAction m_PlayerMap_Crouch;
+        private readonly InputAction m_PlayerMap_F;
         public struct PlayerMapActions
         {
             private @PlayerInput m_Wrapper;
@@ -516,6 +538,7 @@ namespace CoreCraft.Input
             public InputAction @Look => m_Wrapper.m_PlayerMap_Look;
             public InputAction @Run => m_Wrapper.m_PlayerMap_Run;
             public InputAction @Crouch => m_Wrapper.m_PlayerMap_Crouch;
+            public InputAction @F => m_Wrapper.m_PlayerMap_F;
             public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -540,6 +563,9 @@ namespace CoreCraft.Input
                     @Crouch.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouch;
                     @Crouch.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouch;
                     @Crouch.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouch;
+                    @F.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnF;
+                    @F.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnF;
+                    @F.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnF;
                 }
                 m_Wrapper.m_PlayerMapActionsCallbackInterface = instance;
                 if (instance != null)
@@ -559,6 +585,9 @@ namespace CoreCraft.Input
                     @Crouch.started += instance.OnCrouch;
                     @Crouch.performed += instance.OnCrouch;
                     @Crouch.canceled += instance.OnCrouch;
+                    @F.started += instance.OnF;
+                    @F.performed += instance.OnF;
+                    @F.canceled += instance.OnF;
                 }
             }
         }
@@ -634,6 +663,7 @@ namespace CoreCraft.Input
             void OnLook(InputAction.CallbackContext context);
             void OnRun(InputAction.CallbackContext context);
             void OnCrouch(InputAction.CallbackContext context);
+            void OnF(InputAction.CallbackContext context);
         }
         public interface IMinigameMapActions
         {
