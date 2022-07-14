@@ -99,7 +99,11 @@ namespace CoreCraft.Character
         {
             if (context.phase == InputActionPhase.Started)
             {
-                if (_itemHit.transform.tag == "Item" && _itemHit.transform != null && _itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
+                if (_itemHit.collider.transform.tag == "Interactable")
+                {
+                    _itemHit.collider.transform.GetComponent<InteractEvent>().Interact(NetworkManager.Singleton.LocalClientId);
+                }
+                else if (_itemHit.transform.tag == "Item" && _itemHit.transform != null && _itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
                 {
                     if (_itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled)
                     {

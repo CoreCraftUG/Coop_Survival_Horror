@@ -18,20 +18,20 @@ namespace CoreCraft.Enemy
     {
         #region Odin Only
 
-        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
+        [TabGroup("ParentGroup", "Level Design Tool", false, 0),
          SerializeField,
          InlineButton("ResetVentCount")]
         private string _ventName;
 
         [Space,
-         TabGroup("ParentGroup", "Level Design Tool",false, 0),
+         TabGroup("ParentGroup", "Level Design Tool", false, 0),
          ShowInInspector,
          ValueDropdown("_ventObjectList"),
          InlineButton("SelectVentObject", "Select Vent Object"),
          InlineButton("DestroySelectedVentObject", "X")]
         private GameObject _previewVent1;
 
-        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
+        [TabGroup("ParentGroup", "Level Design Tool", false, 0),
          ShowInInspector,
          ValueDropdown("_ventObjectList"),
          InlineButton("SelectVentObject", "Select Vent Object"),
@@ -39,19 +39,19 @@ namespace CoreCraft.Enemy
         private GameObject _previewVent2;
 
         [Space,
-         TabGroup("ParentGroup", "Level Design Tool",false, 0),
+         TabGroup("ParentGroup", "Level Design Tool", false, 0),
          ShowInInspector,
          SerializeField,
          MinValue(1),
          MaxValue(3)]
         private int _pathDirectionX;
-        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
+        [TabGroup("ParentGroup", "Level Design Tool", false, 0),
          ShowInInspector,
          SerializeField,
          MinValue(1),
          MaxValue(3)]
         private int _pathDirectionY;
-        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
+        [TabGroup("ParentGroup", "Level Design Tool", false, 0),
          ShowInInspector,
          SerializeField,
          MinValue(1),
@@ -59,21 +59,21 @@ namespace CoreCraft.Enemy
         private int _pathDirectionZ;
 
         [Space,
-         TabGroup("ParentGroup", "Level Design Tool",false, 0),
+         TabGroup("ParentGroup", "Level Design Tool", false, 0),
          SerializeField]
         private bool _automaticMirrorPath;
 
-        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
+        [TabGroup("ParentGroup", "Level Design Tool", false, 0),
          SerializeField]
         private bool _automaticDebugPath;
 
         [Space,
-         TabGroup("ParentGroup", "Level Design Tool",false, 0),
+         TabGroup("ParentGroup", "Level Design Tool", false, 0),
          SerializeField,
-         Range(0.0f,15.0f)]
+         Range(0.0f, 15.0f)]
         private float _spawnDistance;
 
-        [TabGroup("ParentGroup", "Level Design Tool",false, 0),
+        [TabGroup("ParentGroup", "Level Design Tool", false, 0),
          SerializeField,
          Range(0.0f, 7.0f)]
         private float _spawnHeight;
@@ -90,14 +90,14 @@ namespace CoreCraft.Enemy
 
         #region Debug
 
-        [TabGroup("ParentGroup", "Debug",false, 1),
+        [TabGroup("ParentGroup", "Debug", false, 1),
          ShowInInspector,
          ValueDropdown("_ventObjectList"),
          InlineButton("SelectVentObject", "Select Vent Object"),
          InlineButton("DestroySelectedVentObject", "X")]
         private GameObject _debugVent1;
 
-        [TabGroup("ParentGroup", "Debug",false, 1),
+        [TabGroup("ParentGroup", "Debug", false, 1),
          ShowInInspector,
          ValueDropdown("_ventObjectList"),
          InlineButton("SelectVentObject", "Select Vent Object"),
@@ -105,12 +105,12 @@ namespace CoreCraft.Enemy
         private GameObject _debugVent2;
 
         [Space,
-         TabGroup("ParentGroup", "Debug",false, 1),
+         TabGroup("ParentGroup", "Debug", false, 1),
          SerializeField]
         private float _soundTravelSpeed;
 
         [Space,
-         TabGroup("ParentGroup", "Debug",false, 1),
+         TabGroup("ParentGroup", "Debug", false, 1),
          ShowInInspector,
          ValueDropdown("_ventCrawlingSFXList")]
         private AudioClip _debugVentAudioClip;
@@ -134,7 +134,7 @@ namespace CoreCraft.Enemy
          AssetsOnly]
         private GameObject _ventSoundPrefabObject;
 
-        [TabGroup("ParentGroup", "Prefab Data",false,2),
+        [TabGroup("ParentGroup", "Prefab Data", false, 2),
          SerializeField,
          AssetsOnly]
         private GameObject _ventPathPrefabObject;
@@ -714,7 +714,7 @@ namespace CoreCraft.Enemy
         public int VentID;
         public PathOrderDictionary PathDictionary;
     }
-    
+
     [Serializable]
     public struct PathOrder
     {
