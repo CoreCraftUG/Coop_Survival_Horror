@@ -28,15 +28,16 @@ namespace CoreCraft.Minigames
         private NetworkVariable<Vector3> pos3 = new NetworkVariable<Vector3>();
         private NetworkVariable<bool> _canMove = new NetworkVariable<bool>(true);
 
-        public void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _map = _inputsActionAsset.FindActionMap("MinigameMap");
 
             _map.FindAction("MiniGame1").performed += MinigameInput;
             _map.FindAction("MiniGame2").performed += MinigameInput2;
 
 
-            this.transform.GetComponent<NetworkObject>().Spawn();
+            
             AwakeServerRpc();
         }
 

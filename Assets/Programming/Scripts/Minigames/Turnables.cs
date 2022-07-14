@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine.InputSystem;
 
 namespace CoreCraft.Minigames
@@ -10,75 +11,147 @@ namespace CoreCraft.Minigames
     public class Turnables : BaseMinigame
     {
 
-        [SerializeField] private List<Image> _turnables;
-        private float[] angles = { 0, 45, 90, 135, 190, 235, 270, 315 };
-        [SerializeField] private float[] _correctAngles;
-        [SerializeField] private float _range = 5;
-        [SerializeField] private List<Button> _buttons;
+        [SerializeField] private List<GameObject> _turnables;       
+         private List<float> _correctAngles = new List<float>();
+        [SerializeField] private float _range = 1;
+        private int _amountOfParts;
+       
         private int _activeButton;
-        [SerializeField] private MinigameManager _minigameManager;
-
-
-        public void Awake()
+        private int _correctCounter;
+        private List<bool> _isCorrect = new List<bool>();
+        [SerializeField] private Material _completeMaterial;
+        [SerializeField] private Material _selectedMaterial;
+        [SerializeField] private Material _baseMaterial;
+        [SerializeField] private InputActionAsset _inputsActionAsset;
+        private InputActionMap _map;
+        private InputAction _rotate;
+        private NetworkVariable<bool> _canMove = new NetworkVariable<bool>(true);
+        protected override void Awake()
         {
-            foreach(Image img in _turnables)
+           
+            _map = _inputsActionAsset.FindActionMap("MinigameMap");
+
+            _map.FindAction("MiniGame1").started += MinigameInput;
+            _map.FindAction("MiniGame2").performed += MinigameInput2;
+            _rotate = _map.FindAction("MiniGame1");
+
+            base.Awake();
+            AwakeServerRpc();
+
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void AwakeServerRpc()
+        {
+            _activeButton = 0;
+            foreach (GameObject img in _turnables)
             {
-                img.transform.eulerAngles =  new Vector3(0, 0, Random.Range(0, 360));
+                bool temp = false;
+                _correctAngles.Add(img.transform.eulerAngles.x);
+                img.transform.eulerAngles = new Vector3(Random.Range(0, 360), 0, 0);
+                img.GetComponent<MeshRenderer>().material = _baseMaterial;
+                _isCorrect.Add(temp);
             }
             _inputBool.Value = true;
+            _correctCounter = 0;
+            _amountOfParts = _turnables.Count;
+            _turnables[0].GetComponent<MeshRenderer>().material = _selectedMaterial;
+            Debug.Log(_correctAngles);
         }
 
         public void CheckIfCorrect()
         {
             float currentAngle = 0;
-            for(int i = 0; i < _turnables.Count; i++)
-            {
-                currentAngle = _turnables[i].transform.eulerAngles.z;
-                if(currentAngle > _correctAngles[i] - _range && currentAngle < _correctAngles[i] + _range)
+                currentAngle = _turnables[_activeButton].transform.eulerAngles.x;
+                if(currentAngle > _correctAngles[_activeButton] - _range && currentAngle < _correctAngles[_activeButton] + _range)
                 {
-                    _turnables[i].transform.eulerAngles = new Vector3(0, 0, _correctAngles[i]);
-                    _turnables[i].color = Color.green;
-                    _buttons[i].enabled = false;
+                    _turnables[_activeButton].transform.eulerAngles = new Vector3(_correctAngles[_activeButton], 0, 0);
+                    _turnables[_activeButton].GetComponent<MeshRenderer>().material = _completeMaterial;
+                    _isCorrect[_activeButton] = true;
                 }
-            }
+            _canMove.Value = true;
             _inputBool.Value = false;
         }
 
-        public void FixedUpdate()
+        private void OnDestroy()
         {
-            Debug.Log(_minigameManager._inputValue);
-            if(_minigameManager._inputValue.Value != 0)
-                Debug.Log(_minigameManager._inputValue);
-            if(_turnables[_activeButton].color != Color.green && _minigameManager._inputValue.Value != 0)
-                _turnables[_activeButton].transform.Rotate(0, 0, Time.deltaTime * 40 * _minigameManager._inputValue.Value);
-            if (_minigameManager._inputValue.Value == 0)
-                CheckIfCorrect();
-            else
+            _map.FindAction("MiniGame1").performed -= MinigameInput;
+            _map.FindAction("MiniGame2").performed -= MinigameInput2;
+        }
+        public void FixedUpdate()
+        {           
+            if (IsOwner && !_isCorrect[_activeButton])
             {
-                _turnables[_activeButton].transform.Rotate(0, 0, 0);
+                if (_rotate.ReadValue<float>() != 0)
+                {
+                    _turnables[_activeButton].transform.Rotate(Time.deltaTime * 50 * _rotate.ReadValue<float>(), 0, 0);
+                    _canMove.Value = false;
+                }
+                else
+                {
+                    CheckIfCorrect();
+                                    }              
             }
             
         }
 
+        
+        public override void MinigameInput(InputAction.CallbackContext context)
+        {
+            if (IsOwner)
+            {
+                //base.MinigameInput(context);
+                if (context.phase == InputActionPhase.Started)
+                {
+                    _inputValue.Value = context.ReadValue<float>();
+                    Debug.Log(_inputValue.Value);
+                }
+                else
+                    _inputValue.Value = 0;
+            }
 
+        }
 
-        public void Rotate1()
+        public override void MinigameInput2(InputAction.CallbackContext context)
         {
-            _activeButton = 0;
-           
+            if (IsOwner && _canMove.Value)
+            {
+                base.MinigameInput2(context);
+                TurnablesInput2ServerRPC();
+            }
         }
-        public void Rotate2()
+
+        [ServerRpc]
+
+        protected void TurnablesInput2ServerRPC()
         {
-            _activeButton = 1;
+            if (!_canMove.Value)
+                return;
+            _canMove.Value = false;
+            if (!_isCorrect[_activeButton])
+                _turnables[_activeButton].GetComponent<MeshRenderer>().material = _baseMaterial;
+            if (_inputValue2.Value > 0)
+            {
+                if (_activeButton < _amountOfParts - 1)
+                    _activeButton++;
+                else
+                    _activeButton = 0;
+            }
+            if(_inputValue2.Value < 0)
+            {
+                if (_activeButton > 0)
+                    _activeButton--;
+                else
+                    _activeButton = _amountOfParts - 1;
+            }
+            _inputValue2.Value = 0;
+            _canMove.Value = true;
+            if (!_isCorrect[_activeButton])
+                _turnables[_activeButton].GetComponent<MeshRenderer>().material = _selectedMaterial;
+            else
+                TurnablesInput2ServerRPC();
         }
-        public void Rotate3()
-        {
-            _activeButton = 2;
-        }
-        public void Rotate4()
-        {
-            _activeButton = 3;
-        }
+
         // Start is called before the first frame update
 
     }

@@ -19,15 +19,20 @@ namespace CoreCraft.Minigames
         protected bool _turnShapesActive = false;
         protected bool _circleGameActive = true;
 
+        protected virtual void Awake()
+        {
+            this.transform.GetComponent<NetworkObject>().Spawn();
+        }
         public virtual void MinigameInput(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Performed)
             {
+                Debug.Log(context.ReadValue<float>());
                 SetInputValue1ServerRpc(context.ReadValue<float>());
             }
-            else
+            if (context.phase == InputActionPhase.Canceled)
             {
-                // SetInputValue1ServerRpc(0);
+                 SetInputValue1ServerRpc(0);
             }
         }
 
@@ -39,21 +44,21 @@ namespace CoreCraft.Minigames
             }
             else
             {
-                // SetInputValue2ServerRpc(0);
+                 SetInputValue2ServerRpc(0);
             }
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void SetInputValue1ServerRpc(float input)
+        protected void SetInputValue1ServerRpc(float input)
         {
             _inputValue.Value = input;
 
-            if (input == 0)
+            if (input == 0)  
                 _inputBool.Value = true;
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void SetInputValue2ServerRpc(float input)
+        protected void SetInputValue2ServerRpc(float input)
         {
             _inputValue2.Value = input;
 
