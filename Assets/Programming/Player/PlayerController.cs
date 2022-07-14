@@ -34,6 +34,12 @@ namespace CoreCraft.Character
             Cursor.lockState = CursorLockMode.Locked;
         }
 
+        private void Start()
+        {
+            if (IsOwner)
+                gameObject.GetComponent<VoiceOverIP>().SetAudioSourceServerRpc(_networkObject.NetworkObjectId, NetworkManager.Singleton.LocalClientId);
+        }
+
         private void Update()
         {
             SetPositionServerRpc(PhysicsCharacter.PlayerObjectAttachmentTransform.position);
@@ -191,6 +197,22 @@ namespace CoreCraft.Character
                                 break;
                         }
 
+                        break;
+                }
+            }
+        }
+
+        public void PauseInput(InputAction.CallbackContext callback)
+        {
+            if (IsOwner && callback.phase == InputActionPhase.Started)
+            {
+                switch (Cursor.lockState)
+                {
+                    case CursorLockMode.Locked:
+                        Cursor.lockState = CursorLockMode.None;
+                        break;
+                    default:
+                        Cursor.lockState = CursorLockMode.Locked;
                         break;
                 }
             }
