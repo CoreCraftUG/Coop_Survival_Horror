@@ -22,15 +22,14 @@ namespace CoreCraft
             Position = transform.position;
         }
 
-        protected override void Update()
+        protected override void FixedUpdate()
         {
-            base.Update();
+            base.FixedUpdate();
 
             if (MoveUpBool)
             {
                 if (change)
                 {
-                    Debug.Log($"Object Is moving Up");
                     change = (transform.position.y < _targetHeight);
                     MoveUpBool = change;
 
@@ -45,7 +44,9 @@ namespace CoreCraft
                         return;
                     }
 
-                    _rigidbody.velocity = Vector3.up * Speed * Time.deltaTime;
+                    _rigidbody.velocity = Vector3.up * Speed * Time.fixedDeltaTime;
+                    // _rigidbody.MovePosition(new Vector3(transform.position.x, transform.position.y + (Speed * Time.fixedDeltaTime), transform.position.z));
+                    // _rigidbody.MoveRotation();
                     Position = transform.position;
                 }
             }
@@ -53,7 +54,6 @@ namespace CoreCraft
             {
                 if (change)
                 {
-                    Debug.Log($"Object Is moving Down");
                     change = (transform.position.y > _startHeight);
                     MoveDownBool = change;
 
@@ -69,6 +69,7 @@ namespace CoreCraft
                     }
 
                     _rigidbody.velocity = Vector3.down * Speed * Time.deltaTime;
+                    // _rigidbody.MovePosition(new Vector3(transform.position.x, transform.position.y - (Speed * Time.fixedDeltaTime), transform.position.z));
                     Position = transform.position;
                 }
             }
@@ -81,20 +82,17 @@ namespace CoreCraft
 
         public void MoveUp(ulong clientId)
         {
-            Debug.Log($"Object Move Up");
             MoveUpServerRpc();
         }
 
         public void MoveDown(ulong clientId)
         {
-            Debug.Log($"Object Move Down");
             MoveDownServerRpc();
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void MoveUpServerRpc()
         {
-            Debug.Log($"Object Move Up Server");
             MoveUpBool = true;
             MoveDownBool = false;
             change = true;
@@ -103,7 +101,6 @@ namespace CoreCraft
         [ServerRpc(RequireOwnership = false)]
         public void MoveDownServerRpc()
         {
-            Debug.Log($"Object Move Down Server");
             MoveUpBool = false;
             MoveDownBool = true;
             change = true;

@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace CoreCraft
 {
     public class MovingPlatform : MovingObjectBase
     {
-        protected Transform _startTransform;
+        protected Vector3 _startPosition;
         [SerializeField] protected Transform _targetTransform;
 
         protected bool change = false;
@@ -15,23 +16,26 @@ namespace CoreCraft
         public bool MoveForwardBool { get; protected set; }
         public bool MoveBackBool { get; protected set; }
 
+        public UnityEvent<bool> _moving = new UnityEvent<bool>();
+
 
         protected override void Start()
         {
             base.Start();
-            _startTransform = transform;
+            _startPosition = transform.position;
             Position = transform.position;
         }
         
-        protected override void Update()
+        protected override void FixedUpdate()
         {
-            base.Update();
+            base.FixedUpdate();
 
             if (MoveForwardBool)
             {
+                _moving.Invoke(true);
+
                 if (change)
                 {
-                    Debug.Log($"Object Is moving Up");
                     change = (Vector3.Distance(transform.position,_targetTransform.position) > 0.2f);
                     MoveForwardBool = change;
 
@@ -46,22 +50,24 @@ namespace CoreCraft
                         return;
                     }
 
-                    _rigidbody.velocity = (_targetTransform.position - _startTransform.position).normalized * Speed * Time.deltaTime;
+                    _rigidbody.velocity = (_targetTransform.position - _startPosition).normalized * Speed * Time.deltaTime;
+                    // _rigidbody.MovePosition(transform.position + (_targetTransform.position - _startPosition).normalized * Speed * Time.fixedDeltaTime);
                     Position = transform.position;
                 }
             }
             else if (MoveBackBool)
             {
+                _moving.Invoke(true);
+
                 if (change)
                 {
-                    Debug.Log($"Object Is moving Down");
-                    change = (Vector3.Distance(transform.position, _startTransform.position) > 0.2f);
+                    change = (Vector3.Distance(transform.position, _startPosition) > 0.2f);
                     MoveDownBool = change;
 
-                    if (Vector3.Distance(transform.position, _startTransform.position) > 0.2f)
+                    if (Vector3.Distance(transform.position, _startPosition) <= 0.2f)
                     {
                         _rigidbody.velocity = Vector3.zero;
-                        transform.position = _startTransform.position;
+                        transform.position = _startPosition;
                         Position = transform.position;
                         MoveForwardBool = false;
                         MoveBackBool = false;
@@ -69,12 +75,14 @@ namespace CoreCraft
                         return;
                     }
 
-                    _rigidbody.velocity = (_startTransform.position - _targetTransform.position).normalized * Speed * Time.deltaTime;
+                    _rigidbody.velocity = (_startPosition - _targetTransform.position).normalized * Speed * Time.deltaTime;
+                    // _rigidbody.MovePosition(transform.position + (_startPosition - _targetTransform.position).normalized * Speed * Time.fixedDeltaTime);
                     Position = transform.position;
                 }
             }
             else
             {
+                _moving.Invoke(false);
                 _rigidbody.velocity = Vector3.zero;
                 transform.position = Position;
             }
@@ -82,20 +90,17 @@ namespace CoreCraft
 
         public void MoveForward(ulong clientId)
         {
-            Debug.Log($"Object Move Up");
             MoveForwardServerRpc();
         }
 
         public void MoveBack(ulong clientId)
         {
-            Debug.Log($"Object Move Down");
             MoveBackServerRpc();
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void MoveForwardServerRpc()
         {
-            Debug.Log($"Object Move Up Server");
             MoveForwardBool = true;
             MoveBackBool = false;
             change = true;
@@ -104,7 +109,6 @@ namespace CoreCraft
         [ServerRpc(RequireOwnership = false)]
         public void MoveBackServerRpc()
         {
-            Debug.Log($"Object Move Down Server");
             MoveForwardBool = false;
             MoveBackBool = true;
             change = true;

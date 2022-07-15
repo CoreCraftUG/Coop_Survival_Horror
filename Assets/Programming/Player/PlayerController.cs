@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using CoreCraft.Networking.Steam;
+using Steamworks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,6 +26,7 @@ namespace CoreCraft.Character
         private PlayerInput _playerInput;
         private NetworkObject _networkObject;
         private NetworkVariable<Vector3> _networkPosition = new NetworkVariable<Vector3>();
+        private NetworkVariable<ulong> _ownSteamId = new NetworkVariable<ulong>();
 
         private NetworkVariable<bool> _hasPlayer = new NetworkVariable<bool>(true);
 
@@ -43,6 +47,11 @@ namespace CoreCraft.Character
         private void Update()
         {
             SetPositionServerRpc(PhysicsCharacter.PlayerObjectAttachmentTransform.position);
+            //
+            // if (SteamUser.HasVoiceData)
+            // {
+            //     SteamUser.ReadVoiceDataBytes()
+            // }
 
             if (!IsServer) return;
 
@@ -50,6 +59,12 @@ namespace CoreCraft.Character
             PlayerCamera.transform.gameObject.transform.position = _networkPosition.Value;
 
             transform.position = _networkPosition.Value;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void SetSteamIdServerRpc(ulong steamId)
+        {
+            _ownSteamId.Value = steamId;
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -215,6 +230,22 @@ namespace CoreCraft.Character
                         Cursor.lockState = CursorLockMode.Locked;
                         break;
                 }
+            }
+        }
+
+        public void VoIPInput(InputAction.CallbackContext callback)
+        {
+            if (!IsOwner)
+                return;
+
+            switch (callback.phase)
+            {
+                case InputActionPhase.Started:
+                    SteamUser.VoiceRecord = true;
+                    break;
+                case InputActionPhase.Canceled:
+                    SteamUser.VoiceRecord = false;
+                    break;
             }
         }
 

@@ -26,7 +26,7 @@ namespace CoreCraft
             tag = "MovingObject";
         }
 
-        protected virtual void Update()
+        protected virtual void FixedUpdate()
         {
             if (!IsServer)
                 return;

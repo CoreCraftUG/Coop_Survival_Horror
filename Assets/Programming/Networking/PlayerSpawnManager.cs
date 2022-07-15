@@ -64,6 +64,7 @@ namespace CoreCraft.Networking
             _playerCharacters.Add(clientId, player);
 
             PlayerController controller = player.GetComponent<PlayerController>();
+            controller.SetSteamIdServerRpc(GameManager.Instance.GetSteamIdByClientId(clientId));
 
             GameObject cameraObj = Instantiate(_playerCamera, position, rotation);
             NetworkObject nCameraObj = cameraObj.GetComponent<NetworkObject>();
