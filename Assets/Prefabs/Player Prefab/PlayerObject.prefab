@@ -948,7 +948,6 @@ GameObject:
   - component: {fileID: 2297132449024143681}
   - component: {fileID: 636382602080803757}
   - component: {fileID: 2502314172191603005}
-  - component: {fileID: 5934181674196039429}
   - component: {fileID: -3626650311384157596}
   m_Layer: 0
   m_Name: PlayerObject
@@ -1137,7 +1136,7 @@ MonoBehaviour:
     m_ActionName: MinigameMap/LeaveMiniGame[/Keyboard/escape]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5934181674196039429}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CoreCraft.VoiceOverIP, Assembly-CSharp
         m_MethodName: StartSteamRecording
         m_Mode: 0
@@ -1235,29 +1234,6 @@ MonoBehaviour:
   PartsInventory: {fileID: 11400000, guid: 59b61cad045397a49a1c11891dfab2bb, type: 2}
   MaxOxygen: 100
   CurrentOxygen: 100
---- !u!114 &5934181674196039429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2297132449024143685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aedc23c6951aa33478aa5dbc1428abd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _minThreshold: 10
-  _frequency: 0
-  _audioSampleRate: 44100
-  _microphoneName: 
-  _fftWindow: 0
-  _microphoneDropdown: {fileID: 8875717035807879514}
-  _thresholdSlider: {fileID: 1312287126657782823}
-  _sensitivitySlider: {fileID: 1087714824763198134}
-  position: 0
-  samplerate: 44100
-  frequency: 440
 --- !u!82 &-3626650311384157596
 AudioSource:
   m_ObjectHideFlags: 0
