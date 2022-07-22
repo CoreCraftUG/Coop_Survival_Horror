@@ -990,6 +990,7 @@ MonoBehaviour:
   MouseXSensitivity: 10
   MouseYSensitivity: 10
   RunToggle: 0
+  PushToTalk: 0
   CrouchToggle: 0
   IsAlive: 1
 --- !u!114 &2297132449024143684
@@ -1135,7 +1136,19 @@ MonoBehaviour:
     m_ActionId: 17f91f34-fb94-4b2b-9454-37c0ca39e973
     m_ActionName: MinigameMap/LeaveMiniGame[/Keyboard/escape]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5934181674196039429}
+        m_TargetAssemblyTypeName: CoreCraft.VoiceOverIP, Assembly-CSharp
+        m_MethodName: StartSteamRecording
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 27593727-75ee-41df-89df-198107dc5736
     m_ActionName: PlayerMap/F[/Keyboard/f]
   - m_PersistentCalls:
@@ -1242,6 +1255,9 @@ MonoBehaviour:
   _microphoneDropdown: {fileID: 8875717035807879514}
   _thresholdSlider: {fileID: 1312287126657782823}
   _sensitivitySlider: {fileID: 1087714824763198134}
+  position: 0
+  samplerate: 44100
+  frequency: 440
 --- !u!82 &-3626650311384157596
 AudioSource:
   m_ObjectHideFlags: 0

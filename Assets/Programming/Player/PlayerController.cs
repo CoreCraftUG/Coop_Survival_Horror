@@ -19,6 +19,7 @@ namespace CoreCraft.Character
         [SerializeField] public float MouseXSensitivity;
         [SerializeField] public float MouseYSensitivity;
         [SerializeField] public bool RunToggle;
+        [SerializeField] public bool PushToTalk;
         [SerializeField] public bool CrouchToggle;
 
         public bool IsAlive = true;
@@ -238,13 +239,19 @@ namespace CoreCraft.Character
             if (!IsOwner)
                 return;
 
-            switch (callback.phase)
+            switch (PushToTalk)
             {
-                case InputActionPhase.Started:
-                    SteamUser.VoiceRecord = true;
+                case true when callback.phase == InputActionPhase.Started:
                     break;
-                case InputActionPhase.Canceled:
-                    SteamUser.VoiceRecord = false;
+                case false:
+                    switch (callback.phase)
+                    {
+                        case InputActionPhase.Started:
+                            break;
+                        case InputActionPhase.Canceled:
+                            break;
+                    }
+
                     break;
             }
         }
