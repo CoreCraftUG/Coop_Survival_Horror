@@ -79,7 +79,7 @@ namespace CoreCraft.Character
                     }
                     else
                     {
-                        gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
+                        // gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                     }
 
                     _lastDirection = moveDirection;
@@ -114,7 +114,7 @@ namespace CoreCraft.Character
                         }
                         else
                         {
-                            gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
+                            // gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                         }
 
                         _characterController.Move(((_lastDirection * _airControl * _lastSpeed) + gravityDirection) * Time.deltaTime);
@@ -128,7 +128,7 @@ namespace CoreCraft.Character
                         }
                         else
                         {
-                            gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
+                            // gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                         }
                         _characterController.Move(_lastDirection * Time.deltaTime);
                         _lastSpeed -= _airDrag * Time.deltaTime;
@@ -155,7 +155,7 @@ namespace CoreCraft.Character
                         }
                         else
                         {
-                            gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
+                            // gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                         }
 
                         _characterController.Move(((_lastDirection * _lastSpeed) + gravityDirection) * Time.deltaTime);
@@ -185,7 +185,7 @@ namespace CoreCraft.Character
                     }
                     else
                     {
-                        gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
+                        // gravityDirection += transform.up * _groundedData.GroundObject.GetComponent<MovingObjectBase>().MovingYDistance;
                     }
 
                     if (_lastSpeed > 0)

@@ -54,10 +54,9 @@ namespace CoreCraft.Networking
             }
         }
 
-        public ulong GetClientIdBySteamFriend(Friend friend)
-        {
-            return _lobbyPlayersClient.Single(state => state.SteamId == friend.Id).ClientId;
-        }
+        public ulong GetClientIdBySteamFriend(Friend friend) => _lobbyPlayersClient.Single(state => state.SteamId == friend.Id).ClientId;
+
+        public ulong GetSteamIdByClientId(ulong clientId) => _lobbyPlayersClient.Any(p => p.ClientId == clientId) ? _lobbyPlayersServer.Single(p => p.ClientId == clientId).SteamId : (ulong)0;
 
         private void Start()
         {

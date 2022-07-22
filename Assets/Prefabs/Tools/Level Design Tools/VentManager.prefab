@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1652434129993431993}
-  - component: {fileID: 1652434129993431992}
+  - component: {fileID: 4703004912117742978}
   m_Layer: 0
   m_Name: VentManager
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1652434129993431992
+--- !u!114 &4703004912117742978
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,18 +41,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1652434129993431998}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50784d003529e8941bd3a1240d49ed6a, type: 3}
+  m_Script: {fileID: 11500000, guid: c4e9ede7d2ffe0a4bb622d4fe64817c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _ventName: 
   _pathDirectionX: 1
   _pathDirectionY: 1
   _pathDirectionZ: 1
-  _spawnDistance: 10
-  _spawnHeight: 4
+  _automaticMirrorPath: 0
+  _automaticDebugPath: 0
+  _spawnDistance: 0
+  _spawnHeight: 0
   _ventObjectList: []
   _ventCount: 0
-  _soundTravelSpeed: 5
+  _soundTravelSpeed: 0
   _ventPathObject: {fileID: 0}
   _ventPrefabObject: {fileID: 4833575899496448112, guid: c5b3d59342b4156418c589ee092c1278,
     type: 3}
@@ -62,3 +64,6 @@ MonoBehaviour:
     type: 3}
   _ventCrawlingSFXList:
   - {fileID: 8300000, guid: d89a43b813727df4496f652710212de0, type: 3}
+  _ventDictionary:
+    keys: 
+    values: []

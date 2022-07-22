@@ -1,5 +1,6 @@
 using System;
 using BehaviorDesigner.Runtime.Tasks.Unity.UnityLayerMask;
+using CoreCraft.Networking;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -41,10 +42,11 @@ namespace CoreCraft.Character
         public UnityEvent<ECharacterSoundType> CharacterSoundEvent = new UnityEvent<ECharacterSoundType>();
 
         [Space, Header("Components")]
-        [SerializeField, ReadOnly] private Rigidbody _rigidbody;
         [SerializeField] private Transform _orientationTransform;
         [SerializeField] private Transform _playerObjectAttachmentTransform;
         [SerializeField] private CapsuleCollider _characterCollider;
+
+        private Rigidbody _rigidbody => GetComponent<Rigidbody>();
 
         [Space, Header("Move")]
         [SerializeField] private float _walkSpeed;
@@ -70,6 +72,7 @@ namespace CoreCraft.Character
         [Space,Header("Physics")]
         [SerializeField] private float _gravityMultiplier;
         [SerializeField] private float _maxSlopeAngle;
+        private float _gravity = Physics.gravity.y;
 
         [HideInInspector]
         public NetworkVariable<bool> FreeVision = new NetworkVariable<bool>(true);
@@ -89,10 +92,10 @@ namespace CoreCraft.Character
 
         private void Awake()
         {
-            _rigidbody = GetComponent<Rigidbody>();
             _rigidbody.freezeRotation = true;
             StateChangeRequestServerRpc(ECharacterState.Walk);
             PlayerObjectAttachmentTransform = _playerObjectAttachmentTransform;
+            _rigidbody.useGravity = false;
         }
 
         private void Start()
@@ -125,32 +128,50 @@ namespace CoreCraft.Character
                         _rigidbody.AddForce(transform.up * _stepOffset * _currentSpeed, ForceMode.Force);
                     */
 
-                    orientation = Vector3.ProjectOnPlane(orientation, _groundedData.GroundNormal).normalized;
-                    Debug.DrawRay(transform.position - (orientation * 2), orientation * 4,Color.green);
-                    _rigidbody.AddForce(orientation * _currentSpeed, ForceMode.Force);
+                    orientation = Vector3.ProjectOnPlane(orientation, _groundedData.GroundNormal).normalized * _currentSpeed;
+                    Debug.DrawRay(transform.position - (orientation / 2), orientation, Color.green);
 
-                    if (_groundedData.IsMoving)
+                    // if (_groundedData.IsMoving)
                     {
-                        transform.parent = _groundedData.GroundObject.transform;
-                        _rigidbody.velocity += _groundedData.GroundObject.GetComponent<Rigidbody>().velocity;
+                        // gameObject.transform.SetParent(_groundedData.GroundObject.transform);
+                        //
+                        // MovingObjectBase moveObj = _groundedData.GroundObject.GetComponent<MovingObjectBase>();
+                        // Rigidbody moveRig = _groundedData.GroundObject.GetComponent<Rigidbody>();
+                        // orientation += new Vector3(
+                        //     /* X */moveRig.velocity.x,
+                        //     /* Y */moveObj.MoveDownBool? moveRig.velocity.y - 0.1f : moveRig.velocity.y - orientation.y,
+                        //     /* Z */ moveRig.velocity.z);
                     }
-                    else
-                    {
-                        transform.parent = null;
-                    }
+                    // else
+                    //     gameObject.transform.parent = null;
+
+                    _rigidbody.AddForce(orientation, ForceMode.Force);
+                    
+
+                    // if (_groundedData.IsMoving)
+                    // {
+                    //     MovingObjectBase moveObj = _groundedData.GroundObject.GetComponent<MovingObjectBase>();
+                    //     _rigidbody.velocity = new Vector3(/* X */ _rigidbody.velocity.x + _groundedData.GroundObject.GetComponent<Rigidbody>().velocity.x,
+                    //         /* Y */moveObj.MoveDownBool ? _rigidbody.velocity.y +_groundedData.GroundObject.GetComponent<Rigidbody>().velocity.y - 0.1f : _rigidbody.velocity.y + _groundedData.GroundObject.GetComponent<Rigidbody>().velocity.y,
+                    //             /* Z */ _rigidbody.velocity.z + _groundedData.GroundObject.GetComponent<Rigidbody>().velocity.z);
+                    // }
 
                     _rigidbody.drag = _groundDrag;
                     SpeedControl();
+
                     break;
+
                 case false:
+
                     _rigidbody.AddForce(orientation.normalized * _currentSpeed * _airControl, ForceMode.Force);
                     _rigidbody.drag = 0;
+
                     break;
             }
 
-            if (!_groundedData.IsMoving)
+            // if (!_groundedData.IsMoving)
             {
-                _rigidbody.AddForce(Vector3.down * _gravityMultiplier, ForceMode.Force);
+                _rigidbody.AddForce(transform.up * _gravity * _gravityMultiplier, ForceMode.Force);
             }
 
             if (_movementRequested.Value)
@@ -197,8 +218,8 @@ namespace CoreCraft.Character
 
         private void GroundCheck()
         {
-            Debug.DrawRay(transform.position, Vector3.down * _playerHeight * 0.6f, Color.yellow);
-            if (Physics.Raycast(transform.position, Vector3.down,out RaycastHit hit, _playerHeight * 0.6f, _groundLayer))
+            Debug.DrawRay(transform.position, Vector3.down * _playerHeight * 0.65f, Color.yellow);
+            if (Physics.Raycast(transform.position, Vector3.down,out RaycastHit hit, _playerHeight * 0.65f, _groundLayer))
             {
                 _groundedData.IsGround = true;
                 _groundedData.GroundNormal = hit.normal;
@@ -209,6 +230,7 @@ namespace CoreCraft.Character
             else
             {
                 _groundedData.IsGround = false;
+                _groundedData.IsMoving = false;
             }
         }
 
@@ -219,6 +241,16 @@ namespace CoreCraft.Character
                 if (_rigidbody.velocity.magnitude > _currentSpeed)
                 {
                     Vector3 limitedVelocity = _rigidbody.velocity.normalized * _currentSpeed;
+                    _rigidbody.velocity = new Vector3(limitedVelocity.x, limitedVelocity.y, limitedVelocity.z);
+                }
+            }
+            else if (_groundedData.IsMoving)
+            {
+                Rigidbody moveRig = _groundedData.GroundObject.GetComponent<Rigidbody>();
+                Vector3 flatVelocity = new Vector3(_rigidbody.velocity.x, 0, _rigidbody.velocity.z) - new Vector3(moveRig.velocity.x, 0, moveRig.velocity.z);
+                if (flatVelocity.magnitude > _currentSpeed)
+                {
+                    Vector3 limitedVelocity = flatVelocity.normalized * _currentSpeed;
                     _rigidbody.velocity = new Vector3(limitedVelocity.x, _rigidbody.velocity.y, limitedVelocity.z);
                 }
             }
@@ -270,7 +302,7 @@ namespace CoreCraft.Character
             if (CharacterState.Value == ECharacterState.Crouch)
             {
                 _characterCollider.height = _crouchHeight;
-                _rigidbody.AddForce(Vector3.down * 5.0f, ForceMode.Impulse);
+                _rigidbody.AddForce(Vector3.down * 5.0f, ForceMode.Impulse); // TODO: replace with animation
             }
             else
                 _characterCollider.height = _standardWalkHeight;
