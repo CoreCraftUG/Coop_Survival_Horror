@@ -99,36 +99,41 @@ namespace CoreCraft.Character
         {
             if (context.phase == InputActionPhase.Started)
             {
-                if (_itemHit.collider.transform.tag == "Interactable")
+                if (_itemHit.transform != null)
                 {
-                    _itemHit.collider.transform.GetComponent<InteractEvent>().Interact(NetworkManager.Singleton.LocalClientId);
-                }
-                else if (_itemHit.transform.tag == "Item" && _itemHit.transform != null && _itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
-                {
-                    if (_itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled)
-                    {
-                        var item = _itemHit.transform.GetComponent<TestItem>();
-                        if (item != null)
-                        {
-                            if (item.Item.ItemType == EItemType.Part)
-                            {
-                                PartsInventory.AddItemServerRpc(item.Item, (item.Item as ItemsPartBase).PartCount);
-                                InteractServerRpc(_itemHit.transform.GetComponent<NetworkObject>().NetworkObjectId);
-                            }
 
-                            if (item.Item.ItemType == EItemType.Tool)
+
+                    if (_itemHit.collider.transform.tag == "Interactable")
+                    {
+                        _itemHit.collider.transform.GetComponent<InteractEvent>().Interact(NetworkManager.Singleton.LocalClientId);
+                    }
+                    else if (_itemHit.transform.tag == "Item" && _itemHit.transform != null && _itemHit.transform.GetComponentInChildren<ItemOutline>() != null)
+                    {
+                        if (_itemHit.transform.GetComponentInChildren<ItemOutline>().OutlineRenderer.enabled)
+                        {
+                            var item = _itemHit.transform.GetComponent<TestItem>();
+                            if (item != null)
                             {
-                                ToolInventory.AddItemServerRpc(item.Item, 1);
-                                InteractServerRpc(_itemHit.transform.GetComponent<NetworkObject>().NetworkObjectId);
+                                if (item.Item.ItemType == EItemType.Part)
+                                {
+                                    PartsInventory.AddItemServerRpc(item.Item, (item.Item as ItemsPartBase).PartCount);
+                                    InteractServerRpc(_itemHit.transform.GetComponent<NetworkObject>().NetworkObjectId);
+                                }
+
+                                if (item.Item.ItemType == EItemType.Tool)
+                                {
+                                    ToolInventory.AddItemServerRpc(item.Item, 1);
+                                    InteractServerRpc(_itemHit.transform.GetComponent<NetworkObject>().NetworkObjectId);
+                                }
                             }
                         }
                     }
-                }
-                else if (_itemHit.transform.tag == "Minigame")
-                {
-                    SpawnAsOwnerServerRpc(_itemHit.transform.GetComponent<NetworkObject>().NetworkObjectId, NetworkManager.Singleton.LocalClientId);
-                    SwitchInputActionMapServerRpc(NetworkManager.Singleton.LocalClientId, "MinigameMap");
-                    this.transform.GetComponent<PlayerController>().MiniGameInteraction(true, _itemHit.transform.GetComponent<BaseMinigame>().MinigamePos);
+                    else if (_itemHit.transform.tag == "Minigame")
+                    {
+                        SpawnAsOwnerServerRpc(_itemHit.transform.GetComponent<NetworkObject>().NetworkObjectId, NetworkManager.Singleton.LocalClientId);
+                        SwitchInputActionMapServerRpc(NetworkManager.Singleton.LocalClientId, "MinigameMap");
+                        //this.transform.GetComponent<PlayerController>().MiniGameInteraction(true, _itemHit.transform.GetComponent<BaseMinigame>().MinigamePos);
+                    }
                 }
             }
         }

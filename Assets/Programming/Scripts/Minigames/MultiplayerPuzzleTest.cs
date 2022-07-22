@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace CoreCraft.Minigames
 {
@@ -8,11 +9,12 @@ namespace CoreCraft.Minigames
     {
         [SerializeField] protected AMultiplayerTest _test1;
         [SerializeField] protected BMultiplayer _test2;
-        protected bool _complete;
+        private bool _complete;
+        
+        [SerializeField] protected Transform _pieceEndTransform;
         // Start is called before the first frame update
         protected override void Awake()
         {
-            base.Awake();
             _complete = false;
         }
 
